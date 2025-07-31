@@ -1,0 +1,482 @@
+/* iCloud Login Style - Exact Apple Design */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f7;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+  position: relative;
+  padding: 20px;
+}
+
+/* Back Button */
+.back-button {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: #007aff;
+  font-size: 17px;
+  font-weight: 400;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border: 0.5px solid rgba(0, 0, 0, 0.04);
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.95);
+  transform: scale(1.02);
+}
+
+/* Main Container */
+.login-container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Login Card - Container with shadow like iCloud */
+.login-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 122, 255, 0.2),
+    0 4px 16px rgba(0, 122, 255, 0.15),
+    0 2px 8px rgba(0, 122, 255, 0.1);
+  padding: 48px 40px;
+  border: 0.5px solid rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.login-card:hover {
+  box-shadow: 
+    0 12px 40px rgba(0, 122, 255, 0.25),
+    0 8px 24px rgba(0, 122, 255, 0.2),
+    0 4px 12px rgba(0, 122, 255, 0.15);
+}
+
+.login-content {
+  text-align: center;
+}
+
+/* Logo Section */
+.logo-section {
+  margin-bottom: 32px;
+}
+
+.simple-logo {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 40px;
+  display: block;
+  filter: brightness(0.2);
+  transition: all 0.2s ease;
+}
+
+/* Title */
+.login-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 0 0 40px 0;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.brand-name {
+  color: #007aff;
+}
+
+/* Form */
+.login-form {
+  margin-bottom: 32px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 12px 20px;
+  background: #f9f9fb;
+  border-radius: 12px;
+  border: 0.5px solid #e5e5e7;
+}
+
+.user-email {
+  font-size: 17px;
+  color: #1d1d1f;
+  font-weight: 500;
+}
+
+.change-user {
+  background: none;
+  border: none;
+  color: #007aff;
+  font-size: 17px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.change-user:hover {
+  background: rgba(0, 122, 255, 0.1);
+}
+
+/* Input Container */
+.input-container {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.main-input {
+  width: 100%;
+  padding: 16px 20px;
+  padding-right: 50px;
+  font-size: 19px;
+  font-weight: 400;
+  color: #1d1d1f;
+  background: #fff;
+  border: 0.5px solid #d1d1d6;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.main-input::placeholder {
+  color: #8e8e93;
+  font-weight: 400;
+}
+
+.main-input:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+}
+
+/* Input Arrow */
+.input-arrow {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8e8e93;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 0.6;
+}
+
+.input-container:hover .input-arrow {
+  opacity: 0.8;
+  transform: translateY(-50%) translateX(2px);
+}
+
+.main-input:focus + .input-arrow {
+  color: #007aff;
+  opacity: 1;
+  transform: translateY(-50%) translateX(4px) scale(1.1);
+  animation: arrowPulse 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes arrowPulse {
+  0% {
+    transform: translateY(-50%) translateX(4px) scale(1.1);
+  }
+  50% {
+    transform: translateY(-50%) translateX(6px) scale(1.2);
+  }
+  100% {
+    transform: translateY(-50%) translateX(4px) scale(1.1);
+  }
+}
+
+/* Password Toggle */
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #8e8e93;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #1d1d1f;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Submit Button */
+.submit-button {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 19px;
+  font-weight: 600;
+  color: #fff;
+  background: #007aff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #0056cc;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(0, 122, 255, 0.25);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Error Message */
+.error-message {
+  background: #fff5f5;
+  border: 0.5px solid #fed7d7;
+  color: #c53030;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* Demo Section */
+.demo-section {
+  border-top: 0.5px solid #d1d1d6;
+  padding-top: 32px;
+}
+
+.demo-title-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: #8e8e93;
+  text-align: center;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.demo-title-button:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #1d1d1f;
+}
+
+.demo-arrow {
+  font-size: 12px;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  color: #8e8e93;
+}
+
+.demo-arrow.expanded {
+  transform: rotate(180deg);
+  color: #007aff;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  animation: slideDown 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 200px;
+  }
+}
+
+.demo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fff;
+  border: 0.5px solid #e5e5e7;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-align: left;
+}
+
+.demo-item:hover {
+  background: #f9f9fb;
+  border-color: #d1d1d6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.demo-item:active {
+  transform: translateY(0);
+  background: #f2f2f7;
+}
+
+.demo-role {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.demo-email {
+  font-size: 13px;
+  color: #8e8e93;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+/* Role color indicators */
+.demo-role.admin { color: #007aff; }
+.demo-role.operator { color: #34c759; }
+.demo-role.user { color: #ff9500; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-page {
+    padding: 16px;
+  }
+  
+  .login-card {
+    padding: 40px 32px;
+    border-radius: 16px;
+  }
+  
+  .login-title {
+    font-size: 28px;
+  }
+  
+  .main-input {
+    font-size: 17px;
+    padding: 14px 18px;
+    padding-right: 52px;
+  }
+  
+  .continue-button {
+    width: 36px;
+    height: 36px;
+    right: 6px;
+  }
+  
+  .submit-button {
+    font-size: 17px;
+    padding: 14px 20px;
+  }
+  
+  .back-button {
+    top: 20px;
+    left: 20px;
+    font-size: 16px;
+  }
+  
+  .apple-logo {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 32px;
+  }
+  
+  .logo-dots {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .dot {
+    transform: rotate(var(--angle)) translateX(42px) translateY(-2.5px);
+  }
+  
+  .center-logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .simple-logo {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 32px 24px;
+    border-radius: 12px;
+    margin: 0 8px;
+  }
+  
+  .login-title {
+    font-size: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .main-input {
+    font-size: 16px;
+    padding: 12px 16px;
+    padding-right: 48px;
+  }
+  
+  .continue-button {
+    width: 32px;
+    height: 32px;
+    right: 6px;
+  }
+  
+  .submit-button {
+    font-size: 16px;
+    padding: 12px 18px;
+  }
+  
+  .demo-item {
+    padding: 10px 14px;
+  }
+  
+  .demo-role {
+    font-size: 14px;
+  }
+  
+  .demo-email {
+    font-size: 12px;
+  }
+}

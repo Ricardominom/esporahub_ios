@@ -1,0 +1,58 @@
+.theme-toggle-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+}
+
+/* Dark theme styles */
+.dark-theme .theme-toggle-btn {
+  background: rgba(118, 118, 128, 0.12);
+}
+
+.dark-theme .theme-toggle-btn:hover {
+  background: rgba(118, 118, 128, 0.24);
+  transform: scale(1.1);
+}
+
+/* Light theme styles */
+.light-theme .theme-toggle-btn {
+  background: rgba(118, 118, 128, 0.12);
+}
+
+.light-theme .theme-toggle-btn:hover {
+  background: rgba(118, 118, 128, 0.24);
+  transform: scale(1.1);
+}
+
+/* Fixed positioning for landing page */
+.header .theme-toggle-btn {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 20;
+}
+
+/* Relative positioning for other pages */
+.menu-page .theme-toggle-btn,
+.overview-clean .theme-toggle-btn {
+  position: relative;
+  top: auto;
+  right: auto;
+  z-index: 1;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.05);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
