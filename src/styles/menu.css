@@ -140,9 +140,21 @@
   color: #007AFF;
 }
 
-/* Dark theme title - same blue as light theme */
+/* Dark theme title - morado degradado vibrante */
 .ipad-menu.dark-theme .navbar-title h1 {
-  color: #007AFF;
+  background: linear-gradient(135deg, 
+    #5E5CE6 0%, 
+    #BF5AF2 25%, 
+    #AF52DE 50%, 
+    #FF375F 75%, 
+    #5E5CE6 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(94, 92, 230, 0.3));
 }
 
 @keyframes gradientShift {
