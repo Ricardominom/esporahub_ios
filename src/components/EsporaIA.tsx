@@ -109,7 +109,7 @@ const EsporaIA: React.FC<EsporaIAProps> = ({ isOpen, onClose }) => {
                         </div>
                         <div className="header-text">
                             <h3>Espora IA</h3>
-                            <span className="status">En línea</span>
+                            <span className="status">Asistente Inteligente</span>
                         </div>
                     </div>
                     <div className="header-actions">
