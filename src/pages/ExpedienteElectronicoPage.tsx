@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, ChevronLeft, ChevronRight, Check, FileText, User, TrendingUp, ShoppingCart, Award, Target } from 'lucide-react';
+import { LogOut, ChevronLeft, ChevronRight, Check, FileText, User, TrendingUp, ShoppingCart, Award } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { hasPermission } from '../data/users';
 import Logo from '../components/Logo';
@@ -82,8 +82,36 @@ interface FormData {
   empresaCompetencia: string;
   relacionPrevia: string;
   
-  // Post Cierre
-  postCierre: Record<string, any>;
+  // Post Cierre - Información política
+  cargoContratacion: string;
+  cargoAspiracion: string;
+  posicionPolitica: string;
+  tipoCandidatura: string;
+  nombrePartido: string;
+  cambioPolitico: string;
+  empresaCompetenciaPostCierre: string;
+  
+  // Post Cierre - Información sobre personalidad del cliente
+  aperturaNegocios: string;
+  personalidadPredominante: string;
+  motivacionPrincipal: string;
+  
+  // Post Cierre - Retrospectiva de negocios
+  compraPrevia: string;
+  montoPagado: string;
+  tipoContrato: string;
+  tipoCompra: string;
+  inversionProyecto: string;
+  inversionistaAmigo: string;
+  tiempoVenta: string;
+  montoContrato: string;
+  montoInvertidoCierre: string;
+  decisionCompra: string;
+  
+  // Post Cierre - Customer Success Management
+  recomendacion: string;
+  recontratacion: string;
+  recontratacionEmpresa: string;
 }
 
 const ExpedienteElectronicoPage: React.FC = () => {
@@ -97,7 +125,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => 
     document.body.classList.contains('dark-theme')
   );
-  const { logout, user } = useAuthStore();
+  const { user } = useAuthStore();
   
   const [formData, setFormData] = useState<FormData>({
     cliente: '',
@@ -199,33 +227,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
     // Post Cierre - Customer Success Management
     recomendacion: '',
     recontratacion: '',
-    recontratacionEmpresa: '',
-    
-    // Post Cierre - Información política
-    cargoContratacion: '',
-    cargoAspiracion: '',
-    posicionPolitica: '',
-    tipoCandidatura: '',
-    nombrePartido: '',
-    cambioPolitico: '',
-    empresaCompetenciaPostCierre: '',
-    
-    // Post Cierre - Información sobre personalidad del cliente
-    aperturaNegocios: '',
-    personalidadPredominante: '',
-    motivacionPrincipal: '',
-    
-    // Post Cierre - Retrospectiva de negocios
-    compraPrevia: '',
-    montoPagado: '',
-    tipoContrato: '',
-    tipoCompra: '',
-    inversionProyecto: '',
-    inversionistaAmigo: '',
-    tiempoVenta: '',
-    montoContrato: '',
-    montoInvertidoCierre: '',
-    decisionCompra: ''
+    recontratacionEmpresa: ''
   });
 
   // Calcular el progreso total basado en campos completados
@@ -294,7 +296,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
       setClientName(state.clientName);
       setFormData(prev => ({
         ...prev,
-        cliente: state.clientName.split(' - ')[0] || ''
+        cliente: state.clientName?.split(' - ')[0] || ''
       }));
     }
   }, [location]);
@@ -1695,7 +1697,6 @@ const ExpedienteElectronicoPage: React.FC = () => {
           alignItems: 'center',
           gap: '0.5rem',
           padding: '0.5rem 1rem',
-          border: 'none',
           borderRadius: '20px',
           fontSize: '0.875rem',
           cursor: 'pointer',
