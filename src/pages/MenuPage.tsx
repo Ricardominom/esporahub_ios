@@ -1,34 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   LogOut, 
-  LayoutDashboard, 
-  Briefcase, 
-  Users, 
-  DollarSign, 
-  FileText, 
-  Calendar, 
-  Wallet, 
-  BookOpen, 
-  Settings, 
-  MessageSquare, 
-  FolderLock, 
-  Lock, 
-  FlaskConical, 
-  GraduationCap,
-  Search,
-  TrendingUp,
-  Grid3X3,
-  List,
-  MoreHorizontal
+  Search
 } from 'lucide-react';
-import { Sun, Moon } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { hasPermission } from '../data/users';
 import LogoutDialog from '../components/LogoutDialog';
 import Logo from '../components/Logo';
 import UserAvatar from '../components/UserAvatar';
-import ThemeToggle from '../components/ThemeToggle';
 import AccessDeniedModal from '../components/AccessDeniedModal';
 import '../styles/menu.css';
 
@@ -38,7 +18,7 @@ interface MenuItem {
   icon: React.ReactNode;
   color: string;
   path?: string;
-  category: 'productivity' | 'business' | 'utilities' | 'developer';
+  category: 'operativas' | 'organizativas' | 'recursos';
   description: string;
   status: 'active' | 'beta' | 'new' | 'coming-soon';
 }
@@ -69,9 +49,9 @@ const MenuPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => 
     document.body.classList.contains('dark-theme')
   );
-  const { logout, user } = useAuthStore();
+  const { user } = useAuthStore();
   
-  const menuItems: MenuItem[] = [
+  const menuItems: MenuItem[] = useMemo(() => [
     { 
       id: 'overview',
       label: 'Overview',
@@ -201,7 +181,7 @@ const MenuPage: React.FC = () => {
       description: 'Laboratorio de innovación',
       status: 'active'
     }
-  ];
+  ], []);
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
@@ -239,11 +219,12 @@ const MenuPage: React.FC = () => {
     } else {
       setDockedItems([]); // dock starts empty
     }
-  }, []);
+  }, [menuItems]);
 
   // Save docked items to localStorage (save even if empty)
   useEffect(() => {
     // Remove icon property before saving to avoid circular references
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const serializableDockedItems = dockedItems.map(({ icon, ...item }) => item);
     localStorage.setItem('dockedItems', JSON.stringify(serializableDockedItems));
   }, [dockedItems]);
@@ -272,11 +253,6 @@ const MenuPage: React.FC = () => {
     } else {
       navigate('/construction');
     }
-  };
-
-  // Drag and drop handlers
-  const handleDragStart = (e: React.DragEvent, item: MenuItem) => {
-    e.preventDefault(); // Prevent default HTML5 drag
   };
 
   const handleMouseDown = (e: React.MouseEvent, item: MenuItem) => {
@@ -366,6 +342,13 @@ const MenuPage: React.FC = () => {
     if (!isAlreadyDocked && dockedItems.length < 8) { // Increase limit to 8
       setDockedItems(prev => [...prev, item]);
     }
+  };
+
+  const handleDockDropEvent = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDockHighlighted(false);
+    // This function handles the drop event but the actual drop logic 
+    // is handled by mouse events in handleMouseDown/handleMouseUp
   };
 
   // Mouse move handler for dock highlighting
@@ -637,7 +620,7 @@ const MenuPage: React.FC = () => {
         className={`ipad-dock ${isDockHighlighted ? 'drag-over' : ''}`}
         onDragOver={handleDockDragOver}
         onDragLeave={handleDockDragLeave}
-        onDrop={handleDockDrop}
+        onDrop={handleDockDropEvent}
       >
         <div className="dock-content">
           <div className={`dock-apps ${isDockHighlighted ? 'drag-over' : ''}`}>
@@ -646,7 +629,7 @@ const MenuPage: React.FC = () => {
             {dockedItems.length === 0 && (
               <div className="dock-empty-message">Arrastra tus apps favoritas aquí</div>
             )}
-            {dockedItems.map((item, index) => (
+            {dockedItems.map((item) => (
               <div
                 key={item.id}
                 className="dock-app"
