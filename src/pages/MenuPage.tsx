@@ -667,18 +667,20 @@ const MenuPage: React.FC = () => {
             >
               <LogOut size={20} />
             </button>
-            <button 
-              className="dock-espora-ia-button"
-              onClick={() => setIsEsporaIAOpen(true)}
-              title="Espora IA - Asistente Inteligente"
-            >
-              <Bot size={16} />
-              <span className="espora-ia-text">Espora IA</span>
-            </button>
           </div>
         </div>
       </div>
       
+
+      {/* Floating Espora IA Button */}
+      <button 
+        className="floating-espora-ia-button"
+        onClick={() => setIsEsporaIAOpen(true)}
+        title="Espora IA - Asistente Inteligente"
+      >
+        <Bot size={20} />
+        <span className="espora-ia-text">Espora IA</span>
+      </button>
 
       <LogoutDialog
         isOpen={showLogoutDialog}

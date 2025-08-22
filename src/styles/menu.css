@@ -1079,3 +1079,93 @@
     inset 0 1px 0 rgba(0, 122, 255, 0.2);
   transform: none; /* Remove transform to prevent layout issues */
 }
+
+/* Floating Espora IA Button */
+.floating-espora-ia-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border: none;
+  cursor: pointer;
+  padding: 12px 20px;
+  border-radius: 25px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: white;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+  z-index: 1000;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.floating-espora-ia-button:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 35px rgba(59, 130, 246, 0.5);
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+}
+
+.floating-espora-ia-button:active {
+  transform: translateY(0) scale(1.02);
+}
+
+.floating-espora-ia-button svg {
+  transition: transform 0.3s ease;
+}
+
+.floating-espora-ia-button:hover svg {
+  transform: rotate(10deg);
+}
+
+.floating-espora-ia-button .espora-ia-text {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Dark theme adjustments for floating button */
+.ipad-menu.dark-theme .floating-espora-ia-button {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.ipad-menu.dark-theme .floating-espora-ia-button:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+  box-shadow: 0 12px 35px rgba(139, 92, 246, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .floating-espora-ia-button {
+    bottom: 15px;
+    right: 15px;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+  
+  .floating-espora-ia-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-espora-ia-button {
+    bottom: 10px;
+    right: 10px;
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  
+  .floating-espora-ia-button svg {
+    width: 16px;
+    height: 16px;
+  }
+}
