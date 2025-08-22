@@ -138,35 +138,12 @@
   margin: 0;
   line-height: 1.1;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, 
-    #007AFF 0%, 
-    #5856D6 25%, 
-    #AF52DE 50%, 
-    #FF2D92 75%, 
-    #FF3B30 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-size: 200% 200%;
-  animation: gradientShift 8s ease-in-out infinite;
+  color: #007AFF;
 }
 
-/* Dark theme title - mismo gradiente pero más vibrante */
+/* Dark theme title - same blue as light theme */
 .ipad-menu.dark-theme .navbar-title h1 {
-  background: linear-gradient(135deg, 
-    #0A84FF 0%, 
-    #5E5CE6 25%, 
-    #BF5AF2 50%, 
-    #FF375F 75%, 
-    #FF453A 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-size: 200% 200%;
-  animation: gradientShift 8s ease-in-out infinite;
-  filter: drop-shadow(0 0 20px rgba(10, 132, 255, 0.3));
+  color: #007AFF;
 }
 
 @keyframes gradientShift {
