@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   LogOut, 
-  Search
+  Search,
+  Bot
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { hasPermission } from '../data/users';
@@ -10,7 +11,9 @@ import LogoutDialog from '../components/LogoutDialog';
 import Logo from '../components/Logo';
 import UserAvatar from '../components/UserAvatar';
 import AccessDeniedModal from '../components/AccessDeniedModal';
+import EsporaIA from '../components/EsporaIA';
 import '../styles/menu.css';
+import '../styles/espora-ia.css';
 
 interface MenuItem {
   id: string;
@@ -45,6 +48,7 @@ const MenuPage: React.FC = () => {
     dragPosition: { x: 0, y: 0 }
   });
   const [isDockHighlighted, setIsDockHighlighted] = useState(false);
+  const [isEsporaIAOpen, setIsEsporaIAOpen] = useState(false);
   const [draggedItemElement, setDraggedItemElement] = useState<HTMLElement | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(() => 
     document.body.classList.contains('dark-theme')
@@ -663,6 +667,14 @@ const MenuPage: React.FC = () => {
             >
               <LogOut size={20} />
             </button>
+            <button 
+              className="dock-espora-ia-button"
+              onClick={() => setIsEsporaIAOpen(true)}
+              title="Espora IA - Asistente Inteligente"
+            >
+              <Bot size={16} />
+              <span className="espora-ia-text">Espora IA</span>
+            </button>
           </div>
         </div>
       </div>
@@ -677,6 +689,11 @@ const MenuPage: React.FC = () => {
         isOpen={showAccessDeniedModal}
         onClose={() => setShowAccessDeniedModal(false)}
         featureName={deniedFeature}
+      />
+
+      <EsporaIA
+        isOpen={isEsporaIAOpen}
+        onClose={() => setIsEsporaIAOpen(false)}
       />
     </div>
   );
