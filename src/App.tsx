@@ -20,14 +20,14 @@ import '@/styles/global.css';
 
 const AnimatedRoutes = () => {
   const location = useLocation();
-  
+
   return (
     <TransitionGroup>
       <CSSTransition
         key={location.key}
         timeout={{
-          enter: 1500,
-          exit: 1500
+          enter: 600,
+          exit: 300
         }}
         classNames={{
           enter: 'page-enter',
@@ -39,7 +39,7 @@ const AnimatedRoutes = () => {
         unmountOnExit
       >
         <Routes location={location}>
-          <Route path="/" element={<Header />} /> 
+          <Route path="/" element={<Header />} />
           <Route path="/login" element={
             <ProtectedRoute requireAuth={false}>
               <LoginPage />
