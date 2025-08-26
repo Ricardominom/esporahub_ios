@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, User, ArrowLeft } from 'lucide-react';
-import { useAuthStore } from '@/stores/authStore';
 import Logo from '@/components/generals/Logo';
 import UserAvatar from '@/components/generals/UserAvatar';
 import ThemeToggle from '@/components/generals/ThemeToggle';
@@ -15,7 +14,6 @@ const InactiveAccountsPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
-  const { logout } = useAuthStore();
 
   const handleThemeToggle = () => {
     if (isDarkMode) {
@@ -52,21 +50,13 @@ const InactiveAccountsPage: React.FC = () => {
     { id: 5, name: 'Roberto Silva', position: 'Presidente Municipal', color: 'text-yellow-500' }
   ];
 
-  const [accountStatuses, setAccountStatuses] = useState<{ [key: number]: boolean }>(() => {
+  const [accountStatuses] = useState<{ [key: number]: boolean }>(() => {
     const initialStatuses: { [key: number]: boolean } = {};
     inactiveAccounts.forEach(account => {
       initialStatuses[account.id] = false; // Todas empiezan como inactivas
     });
     return initialStatuses;
   });
-
-  const toggleAccountStatus = (accountId: number, event: React.MouseEvent) => {
-    event.stopPropagation();
-    setAccountStatuses(prev => ({
-      ...prev,
-      [accountId]: !prev[accountId]
-    }));
-  };
 
   const handleAccountSelect = (accountName: string, position: string) => {
     navigate('/client-dashboard', {

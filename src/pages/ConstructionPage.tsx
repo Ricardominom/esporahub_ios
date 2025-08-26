@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Construction, ArrowLeft, LogOut } from 'lucide-react';
-import { useAuthStore } from '@/stores/authStore';
 import Logo from '@/components/generals/Logo';
 import LogoutDialog from '@/components/generals/LogoutDialog';
 import '../styles/construction.css';
@@ -13,7 +12,6 @@ const ConstructionPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
-  const { logout } = useAuthStore();
 
   // Listen for theme changes
   useEffect(() => {
@@ -62,7 +60,6 @@ const ConstructionPage: React.FC = () => {
           alignItems: 'center',
           gap: '0.5rem',
           padding: '0.5rem 1rem',
-          border: 'none',
           borderRadius: '20px',
           fontSize: '0.875rem',
           cursor: 'pointer',
