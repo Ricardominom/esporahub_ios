@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, Upload, FileText, Download, Trash2, } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { hasPermission } from '@/data/users';
-import Logo from '@/components/generals/Logo';
+import PageHeader from '@/components/generals/PageHeader';
 import LogoutDialog from '@/components/generals/LogoutDialog';
 import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import '../styles/presentacion-inicial.css';
@@ -30,6 +30,17 @@ const PresentacionInicialPage: React.FC = () => {
     document.body.classList.contains('dark-theme')
   );
   const { user } = useAuthStore();
+
+  const handleThemeToggle = () => {
+    if (isDarkMode) {
+      document.body.classList.remove('dark-theme');
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+      document.body.classList.add('dark-theme');
+    }
+    setIsDarkMode(!isDarkMode);
+  };
 
   // Listen for theme changes
   useEffect(() => {
@@ -135,57 +146,26 @@ const PresentacionInicialPage: React.FC = () => {
 
   return (
     <div className={`presentacion-inicial-page ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      <div className="presentacion-header">
-        <div className="presentacion-breadcrumb-container">
-          <span className="presentacion-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="presentacion-breadcrumb-link"
-          >
-            Menú
-          </button>
-          <span className="presentacion-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/overview-main')}
-            className="presentacion-breadcrumb-link"
-          >
-            Overview
-          </button>
-          <span className="presentacion-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/overview')}
-            className="presentacion-breadcrumb-link"
-          >
-            Configuración
-          </button>
-          <span className="presentacion-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/select-account')}
-            className="presentacion-breadcrumb-link"
-          >
-            Seleccionar
-          </button>
-          <span className="presentacion-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/client-dashboard', { state: { clientName } })}
-            className="presentacion-breadcrumb-link"
-          >
-            {clientName ? clientName.split(' - ')[0] : 'Cliente'}
-          </button>
-          <span className="presentacion-breadcrumb-separator">/</span>
-          <span className="presentacion-breadcrumb-link current-page">
-            presentacion-inicial
-          </span>
-        </div>
-
-        <h1 className="presentacion-title">
-          Presentación inicial: {clientName ? clientName.split(' - ')[0] : 'Cliente'}
-        </h1>
-
-        <div className="header-right">
-          <Logo />
-        </div>
-      </div>
+      <PageHeader
+        title="Presentación inicial"
+        subtitle={clientName ? clientName.split(' - ')[0] : 'Cliente'}
+        showBackButton={false}
+        showTitle={true}
+        showSubtitle={true}
+        showLogo={true}
+        breadcrumbs={[
+          { label: 'Menú', onClick: () => navigate('/dashboard') },
+          { label: 'Overview', onClick: () => navigate('/overview-main') },
+          { label: 'Configuración', onClick: () => navigate('/overview') },
+          { label: 'Seleccionar', onClick: () => navigate('/select-account') },
+          { label: clientName ? clientName.split(' - ')[0] : 'Cliente', onClick: () => navigate('/client-dashboard', { state: { clientName } }) },
+          { label: 'presentacion-inicial', onClick: () => {} }
+        ]}
+        isDarkMode={isDarkMode}
+        onThemeToggle={handleThemeToggle}
+        showUserAvatar={true}
+        showUserName={true}
+      />
 
       <div className={`presentacion-content ${isVisible ? 'visible' : ''}`}>
         <div className="content-layout">

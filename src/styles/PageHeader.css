@@ -13,7 +13,8 @@
 .overview-clean.dark-theme .clean-header,
 .account-page.dark-theme .clean-header,
 .expediente-page.dark-theme .clean-header,
-.checklist-captura-page.dark-theme .clean-header {
+.checklist-captura-page.dark-theme .clean-header,
+.presentacion-inicial-page.dark-theme .clean-header {
     background: rgba(28, 28, 30, 0.4);
     border-bottom-color: rgba(84, 84, 88, 0.65);
 }
@@ -22,14 +23,16 @@
 .overview-clean.light-theme .clean-header,
 .account-page.light-theme .clean-header,
 .expediente-page.light-theme .clean-header,
-.checklist-captura-page.light-theme .clean-header {
+.checklist-captura-page.light-theme .clean-header,
+.presentacion-inicial-page.light-theme .clean-header {
     background: rgba(255, 255, 255, 0.3);
     border-bottom-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Hide border for expediente and checklist pages specifically */
+/* Hide border for expediente, checklist and presentacion pages specifically */
 .expediente-page .clean-header,
-.checklist-captura-page .clean-header {
+.checklist-captura-page .clean-header,
+.presentacion-inicial-page .clean-header {
     border-bottom: none !important;
 }
 
@@ -152,7 +155,8 @@
 .overview-clean.dark-theme .header-title p,
 .account-page.dark-theme .header-title p,
 .expediente-page.dark-theme .header-title p,
-.checklist-captura-page.dark-theme .header-title p {
+.checklist-captura-page.dark-theme .header-title p,
+.presentacion-inicial-page.dark-theme .header-title p {
     color: rgba(255, 255, 255, 0.6);
 }
 
@@ -160,14 +164,16 @@
 .overview-clean.light-theme .header-title p,
 .account-page.light-theme .header-title p,
 .expediente-page.light-theme .header-title p,
-.checklist-captura-page.light-theme .header-title p {
+.checklist-captura-page.light-theme .header-title p,
+.presentacion-inicial-page.light-theme .header-title p {
     color: #1a202c !important;
     opacity: 1 !important;
 }
 
-/* Extra specificity for expediente and checklist page subtitle in light mode */
+/* Extra specificity for expediente, checklist and presentacion page subtitle in light mode */
 .expediente-page.light-theme .clean-header .header-title p,
-.checklist-captura-page.light-theme .clean-header .header-title p {
+.checklist-captura-page.light-theme .clean-header .header-title p,
+.presentacion-inicial-page.light-theme .clean-header .header-title p {
     color: #2d3748 !important;
     opacity: 1 !important;
     text-shadow: none !important;
@@ -285,7 +291,8 @@
 .overview-clean.dark-theme .breadcrumb-container,
 .account-page.dark-theme .breadcrumb-container,
 .expediente-page.dark-theme .breadcrumb-container,
-.checklist-captura-page.dark-theme .breadcrumb-container {
+.checklist-captura-page.dark-theme .breadcrumb-container,
+.presentacion-inicial-page.dark-theme .breadcrumb-container {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -294,7 +301,8 @@
 .overview-clean.dark-theme .breadcrumb-container:hover,
 .account-page.dark-theme .breadcrumb-container:hover,
 .expediente-page.dark-theme .breadcrumb-container:hover,
-.checklist-captura-page.dark-theme .breadcrumb-container:hover {
+.checklist-captura-page.dark-theme .breadcrumb-container:hover,
+.presentacion-inicial-page.dark-theme .breadcrumb-container:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.25);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -304,7 +312,8 @@
 .overview-clean.light-theme .breadcrumb-container,
 .account-page.light-theme .breadcrumb-container,
 .expediente-page.light-theme .breadcrumb-container,
-.checklist-captura-page.light-theme .breadcrumb-container {
+.checklist-captura-page.light-theme .breadcrumb-container,
+.presentacion-inicial-page.light-theme .breadcrumb-container {
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -313,7 +322,8 @@
 .overview-clean.light-theme .breadcrumb-container:hover,
 .account-page.light-theme .breadcrumb-container:hover,
 .expediente-page.light-theme .breadcrumb-container:hover,
-.checklist-captura-page.light-theme .breadcrumb-container:hover {
+.checklist-captura-page.light-theme .breadcrumb-container:hover,
+.presentacion-inicial-page.light-theme .breadcrumb-container:hover {
     background: rgba(255, 255, 255, 1);
     border-color: rgba(0, 0, 0, 0.15);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -344,14 +354,16 @@
 .overview-clean.dark-theme .breadcrumb-link,
 .account-page.dark-theme .breadcrumb-link,
 .expediente-page.dark-theme .breadcrumb-link,
-.checklist-captura-page.dark-theme .breadcrumb-link {
+.checklist-captura-page.dark-theme .breadcrumb-link,
+.presentacion-inicial-page.dark-theme .breadcrumb-link {
     color: #0A84FF;
 }
 
 .overview-clean.dark-theme .breadcrumb-link:hover,
 .account-page.dark-theme .breadcrumb-link:hover,
 .expediente-page.dark-theme .breadcrumb-link:hover,
-.checklist-captura-page.dark-theme .breadcrumb-link:hover {
+.checklist-captura-page.dark-theme .breadcrumb-link:hover,
+.presentacion-inicial-page.dark-theme .breadcrumb-link:hover {
     color: #409CFF;
     background: rgba(10, 132, 255, 0.1);
     transform: scale(1.02);
@@ -360,7 +372,8 @@
 .overview-clean.dark-theme .breadcrumb-link:active,
 .account-page.dark-theme .breadcrumb-link:active,
 .expediente-page.dark-theme .breadcrumb-link:active,
-.checklist-captura-page.dark-theme .breadcrumb-link:active {
+.checklist-captura-page.dark-theme .breadcrumb-link:active,
+.presentacion-inicial-page.dark-theme .breadcrumb-link:active {
     transform: scale(0.98);
     background: rgba(10, 132, 255, 0.15);
 }
@@ -369,14 +382,16 @@
 .overview-clean.light-theme .breadcrumb-link,
 .account-page.light-theme .breadcrumb-link,
 .expediente-page.light-theme .breadcrumb-link,
-.checklist-captura-page.light-theme .breadcrumb-link {
+.checklist-captura-page.light-theme .breadcrumb-link,
+.presentacion-inicial-page.light-theme .breadcrumb-link {
     color: #007AFF;
 }
 
 .overview-clean.light-theme .breadcrumb-link:hover,
 .account-page.light-theme .breadcrumb-link:hover,
 .expediente-page.light-theme .breadcrumb-link:hover,
-.checklist-captura-page.light-theme .breadcrumb-link:hover {
+.checklist-captura-page.light-theme .breadcrumb-link:hover,
+.presentacion-inicial-page.light-theme .breadcrumb-link:hover {
     color: #0051D5;
     background: rgba(0, 122, 255, 0.1);
     transform: scale(1.02);
@@ -385,7 +400,8 @@
 .overview-clean.light-theme .breadcrumb-link:active,
 .account-page.light-theme .breadcrumb-link:active,
 .expediente-page.light-theme .breadcrumb-link:active,
-.checklist-captura-page.light-theme .breadcrumb-link:active {
+.checklist-captura-page.light-theme .breadcrumb-link:active,
+.presentacion-inicial-page.light-theme .breadcrumb-link:active {
     transform: scale(0.98);
     background: rgba(0, 122, 255, 0.15);
 }
@@ -404,7 +420,8 @@
 .overview-clean.dark-theme .breadcrumb-separator,
 .account-page.dark-theme .breadcrumb-separator,
 .expediente-page.dark-theme .breadcrumb-separator,
-.checklist-captura-page.dark-theme .breadcrumb-separator {
+.checklist-captura-page.dark-theme .breadcrumb-separator,
+.presentacion-inicial-page.dark-theme .breadcrumb-separator {
     color: rgba(255, 255, 255, 0.6);
 }
 
@@ -412,6 +429,7 @@
 .overview-clean.light-theme .breadcrumb-separator,
 .account-page.light-theme .breadcrumb-separator,
 .expediente-page.light-theme .breadcrumb-separator,
-.checklist-captura-page.light-theme .breadcrumb-separator {
+.checklist-captura-page.light-theme .breadcrumb-separator,
+.presentacion-inicial-page.light-theme .breadcrumb-separator {
     color: #718096;
 }
