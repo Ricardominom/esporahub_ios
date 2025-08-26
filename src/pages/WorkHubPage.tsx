@@ -6,6 +6,7 @@ import { hasPermission, getUserById } from '../data/users';
 import LogoutDialog from '../components/LogoutDialog';
 import Logo from '../components/Logo';
 import UserAvatar from '../components/UserAvatar';
+import ThemeToggle from '../components/ThemeToggle';
 import { storage } from '../utils/storage';
 import InputModal from '../components/InputModal';
 import '../styles/overview-clean.css';
@@ -38,9 +39,9 @@ const WorkHubPage: React.FC = () => {
   const [projectItems, setProjectItems] = useState<ProjectItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [taskAssignments, setTaskAssignments] = useState<TaskAssignment[]>([]);
-  const [fieldValues, setFieldValues] = useState<{[key: string]: string}>(() => {
+  const [fieldValues, setFieldValues] = useState<{ [key: string]: string }>(() => {
     // Intentar cargar los valores de los campos desde localStorage
-    const savedValues = storage.getItem<{[key: string]: string}>('fieldValues');
+    const savedValues = storage.getItem<{ [key: string]: string }>('fieldValues');
     return savedValues || {};
   });
   const [modalState, setModalState] = useState({
@@ -49,26 +50,37 @@ const WorkHubPage: React.FC = () => {
     fieldType: 'text' as 'text' | 'number' | 'select',
     initialValue: '',
     selectOptions: [] as { value: string; label: string }[],
-    onSave: (value: string) => {}
+    onSave: (value: string) => { }
   });
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
-  
+
   // Listen for theme changes
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
+  const handleThemeToggle = () => {
+    if (isDarkMode) {
+      document.body.classList.remove('dark-theme');
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+      document.body.classList.add('dark-theme');
+    }
+    setIsDarkMode(!isDarkMode);
+  };
+
   useEffect(() => {
     setIsVisible(true);
 
@@ -77,7 +89,7 @@ const WorkHubPage: React.FC = () => {
       try {
         // Cargar las asignaciones de tareas desde localStorage 
         const savedAssignments = storage.getItem<TaskAssignment[]>('taskAssignments') || [];
-        
+
         // Filtrar solo las tareas asignadas al usuario actual
         if (user) {
           const userTasks = savedAssignments.filter(task => task.userId === user.id);
@@ -87,14 +99,14 @@ const WorkHubPage: React.FC = () => {
         console.error('Error loading task assignments:', error);
       }
     };
-    
+
     // Cargar tareas inicialmente
     loadTasks();
     loadProjectItems();
-    
+
     // Configurar un intervalo para verificar periódicamente si hay nuevas tareas
     const intervalId = setInterval(loadTasks, 3000);
-    
+
     // Limpiar el intervalo cuando el componente se desmonte
     return () => clearInterval(intervalId);
   }, [user]);
@@ -103,12 +115,12 @@ const WorkHubPage: React.FC = () => {
   const loadProjectItems = () => {
     try {
       // Cargar los ítems seleccionados y los datos del formulario
-      const selectedItems = storage.getItem<{[key: string]: boolean}>('selectedItems') || {};
-      const formData = storage.getItem<{[key: string]: any[]}>('formData');
-      
+      const selectedItems = storage.getItem<{ [key: string]: boolean }>('selectedItems') || {};
+      const formData = storage.getItem<{ [key: string]: any[] }>('formData');
+
       if (formData) {
         const items: ProjectItem[] = [];
-        
+
         // Procesar cada sección
         Object.entries(formData).forEach(([sectionId, data]: [string, any[]]) => {
           data.forEach((item) => {
@@ -122,7 +134,7 @@ const WorkHubPage: React.FC = () => {
             }
           });
         });
-        
+
         setProjectItems(items);
       }
     } catch (error) {
@@ -132,44 +144,44 @@ const WorkHubPage: React.FC = () => {
 
   // Función para obtener el nombre de la sección
   const getSectionName = (sectionId: string): string => {
-    const sectionMapping: {[key: string]: string} = {
+    const sectionMapping: { [key: string]: string } = {
       'estrategia': 'Set Up Estrategia Digital',
-      'antropologicos': 'Estudios Antropológicos', 
+      'antropologicos': 'Estudios Antropológicos',
       'otros-estudios': 'Otros Estudios',
       'acompanamiento': 'Set Up Acompañamiento Digital',
       'gerencia': 'Set Up Gerencia Digital',
       'produccion': 'Set Up Producción',
       'difusion': 'Set up Difusión'
     };
-    
+
     return sectionMapping[sectionId] || sectionId;
   };
 
   // Función para obtener las tareas según la categoría seleccionada
   const getFilteredTasks = () => {
     if (!taskAssignments.length) return [];
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
+
     const nextWeekStart = new Date(today);
     nextWeekStart.setDate(today.getDate() + 7 - today.getDay());
-    
+
     const nextWeekEnd = new Date(nextWeekStart);
     nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
-    
+
     return taskAssignments.filter(task => {
       // Si la categoría es "all", mostrar todas las tareas
       if (selectedCategory === 'all') return true;
-      
-      if (!task.dueDate) return selectedCategory === 'no-date'; 
-      
+
+      if (!task.dueDate) return selectedCategory === 'no-date';
+
       const dueDate = new Date(task.dueDate);
       dueDate.setHours(0, 0, 0, 0);
-      
+
       switch (selectedCategory) {
         case 'past':
           return dueDate < today;
@@ -199,25 +211,25 @@ const WorkHubPage: React.FC = () => {
 
     // Si la categoría es "all", mostrar el total de tareas
     if (categoryId === 'all') return taskAssignments.length;
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
+
     const nextWeekStart = new Date(today);
     nextWeekStart.setDate(today.getDate() + 7 - today.getDay());
-    
+
     const nextWeekEnd = new Date(nextWeekStart);
     nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
-    
+
     return taskAssignments.filter(task => {
       if (!task.dueDate) return categoryId === 'no-date';
-      
+
       const dueDate = new Date(task.dueDate);
       dueDate.setHours(0, 0, 0, 0);
-      
+
       switch (categoryId) {
         case 'past':
           return dueDate < today;
@@ -248,21 +260,21 @@ const WorkHubPage: React.FC = () => {
     { id: 'later', label: 'Después', icon: <Calendar size={16} /> },
     { id: 'no-date', label: 'Sin fecha', icon: <Calendar size={16} /> }
   ];
-  
+
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategory(categoryId);
   };
-  
+
   // Función para abrir el modal
   const openModal = (
-    itemId: string, 
-    fieldName: string, 
+    itemId: string,
+    fieldName: string,
     fieldType: 'text' | 'number' | 'select' = 'text',
     selectOptions: { value: string; label: string }[] = []
   ) => {
     const fieldKey = `${itemId}-${fieldName}`;
     const currentValue = fieldValues[fieldKey] || '';
-    
+
     setModalState({
       isOpen: true,
       fieldName,
@@ -275,7 +287,7 @@ const WorkHubPage: React.FC = () => {
           [fieldKey]: value
         };
         setFieldValues(updatedValues);
-        
+
         // Guardar en localStorage
         storage.setItem('fieldValues', updatedValues);
       }
@@ -302,7 +314,7 @@ const WorkHubPage: React.FC = () => {
       <header className="clean-header">
         <div className="header-content">
           <div className="header-left">
-            <button 
+            <button
               onClick={() => navigate('/dashboard')}
               className="back-button"
             >
@@ -310,7 +322,7 @@ const WorkHubPage: React.FC = () => {
               <span>Menú</span>
             </button>
           </div>
-          
+
           <div className="header-center">
             <Logo />
             <div className="header-title">
@@ -318,24 +330,13 @@ const WorkHubPage: React.FC = () => {
               <p>Centro de colaboración y gestión de tareas</p>
             </div>
           </div>
-          
+
           <div className="header-right">
             <UserAvatar showName size="md" />
-            <button 
-              className="theme-toggle-btn"
-              onClick={() => {
-                if (isDarkMode) {
-                  document.body.classList.remove('dark-theme');
-                  document.body.classList.add('light-theme');
-                } else {
-                  document.body.classList.remove('light-theme');
-                  document.body.classList.add('dark-theme');
-                }
-              }}
-              title={isDarkMode ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-            >
-              {isDarkMode ? '☀️' : '🌙'}
-            </button>
+            <ThemeToggle
+              isDarkMode={isDarkMode}
+              onToggle={handleThemeToggle}
+            />
           </div>
         </div>
       </header>
@@ -349,15 +350,15 @@ const WorkHubPage: React.FC = () => {
               <h2>Centro de Trabajo</h2>
               <p>Gestiona tus tareas y proyectos</p>
             </div>
-            
+
             {/* Tab Selector */}
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
               marginBottom: '2rem',
               gap: '0'
             }}>
-              <button 
+              <button
                 className={`tab-selector ${activeTab === 'tareas' ? 'active' : ''}`}
                 onClick={() => setActiveTab('tareas')}
                 style={{
@@ -382,7 +383,7 @@ const WorkHubPage: React.FC = () => {
               >
                 TAREAS
               </button>
-              <button 
+              <button
                 className={`tab-selector ${activeTab === 'proyecto' ? 'active' : ''}`}
                 onClick={() => setActiveTab('proyecto')}
                 style={{
@@ -406,30 +407,30 @@ const WorkHubPage: React.FC = () => {
                 PROYECTO
               </button>
             </div>
-            
+
             {/* Time Categories - Solo mostrar cuando el tab activo es 'tareas' */}
             {activeTab === 'tareas' && (
               <div style={{ marginBottom: '2rem' }}>
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', 
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
                   gap: '1rem',
                   maxWidth: '1200px',
                   margin: '0 auto'
                 }}>
                   {timeCategories.map(category => (
-                    <div 
-                      key={category.id} 
+                    <div
+                      key={category.id}
                       className="action-card"
-                      style={{ 
+                      style={{
                         cursor: 'pointer',
                         position: 'relative',
                         ...(selectedCategory === category.id ? {
-                          background: isDarkMode 
-                            ? 'rgba(0, 122, 255, 0.2)' 
+                          background: isDarkMode
+                            ? 'rgba(0, 122, 255, 0.2)'
                             : 'rgba(0, 122, 255, 0.1)',
-                          borderColor: isDarkMode 
-                            ? 'rgba(0, 122, 255, 0.4)' 
+                          borderColor: isDarkMode
+                            ? 'rgba(0, 122, 255, 0.4)'
                             : 'rgba(0, 122, 255, 0.3)',
                           transform: 'translateY(-2px)',
                           boxShadow: isDarkMode
@@ -440,10 +441,10 @@ const WorkHubPage: React.FC = () => {
                       onClick={() => handleCategoryClick(category.id)}
                     >
                       <div className="card-header">
-                        <div 
+                        <div
                           className="card-icon"
-                          style={{ 
-                            backgroundColor: getTaskCountForCategory(category.id) === 0 
+                          style={{
+                            backgroundColor: getTaskCountForCategory(category.id) === 0
                               ? (isDarkMode ? '#8E8E93' : '#8E8E93')
                               : '#007AFF'
                           }}
@@ -456,12 +457,12 @@ const WorkHubPage: React.FC = () => {
                           </div>
                         )}
                       </div>
-                      
+
                       <div className="card-content">
                         <h3>{category.label}</h3>
                         <p>{getTaskCountForCategory(category.id)} tareas</p>
                       </div>
-                      
+
                       {selectedCategory === category.id && (
                         <div style={{
                           position: 'absolute',
@@ -483,20 +484,20 @@ const WorkHubPage: React.FC = () => {
                 </div>
               </div>
             )}
-            
+
             {/* Content Area */}
             {activeTab === 'tareas' ? (
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
                 gap: '1.5rem',
                 maxWidth: '1200px',
                 margin: '0 auto'
               }}>
                 {filteredTasks && filteredTasks.length > 0 ? (
                   filteredTasks.map((task) => (
-                    <div 
-                      key={task.itemId} 
+                    <div
+                      key={task.itemId}
                       className="action-card"
                       style={{
                         height: '160px',
@@ -505,19 +506,19 @@ const WorkHubPage: React.FC = () => {
                         justifyContent: 'space-between',
                         position: 'relative',
                         ...(task.completed ? {
-                          background: isDarkMode 
-                            ? 'rgba(52, 199, 89, 0.15)' 
+                          background: isDarkMode
+                            ? 'rgba(52, 199, 89, 0.15)'
                             : 'rgba(52, 199, 89, 0.1)',
-                          borderColor: isDarkMode 
-                            ? 'rgba(52, 199, 89, 0.3)' 
+                          borderColor: isDarkMode
+                            ? 'rgba(52, 199, 89, 0.3)'
                             : 'rgba(52, 199, 89, 0.2)'
                         } : {})
                       }}
                     >
                       <div className="card-header">
-                        <div 
+                        <div
                           className="card-icon"
-                          style={{ 
+                          style={{
                             backgroundColor: task.completed ? '#34C759' : '#007AFF',
                             fontSize: '20px'
                           }}
@@ -530,9 +531,9 @@ const WorkHubPage: React.FC = () => {
                           </div>
                         )}
                       </div>
-                      
+
                       <div className="card-content">
-                        <h3 style={{ 
+                        <h3 style={{
                           fontSize: '15px',
                           lineHeight: '1.3',
                           marginBottom: '8px',
@@ -543,14 +544,14 @@ const WorkHubPage: React.FC = () => {
                         }}>
                           {task.concept || "Tarea sin nombre"}
                         </h3>
-                        <p style={{ 
+                        <p style={{
                           fontSize: '13px',
                           opacity: 0.8,
                           marginBottom: '8px'
                         }}>
                           {task.section}
                         </p>
-                        <p style={{ 
+                        <p style={{
                           fontSize: '13px',
                           opacity: 0.6,
                           display: 'flex',
@@ -558,13 +559,13 @@ const WorkHubPage: React.FC = () => {
                           gap: '4px'
                         }}>
                           <Calendar size={12} />
-                          {task.dueDate ? new Date(task.dueDate).toLocaleDateString('es-ES', { 
-                            month: 'short', 
-                            day: 'numeric' 
+                          {task.dueDate ? new Date(task.dueDate).toLocaleDateString('es-ES', {
+                            month: 'short',
+                            day: 'numeric'
                           }) : 'Sin fecha'}
                         </p>
                       </div>
-                      
+
                       <div className="card-footer">
                         <div style={{
                           fontSize: '11px',
@@ -586,7 +587,7 @@ const WorkHubPage: React.FC = () => {
                     padding: '4rem 2rem',
                     opacity: 0.6
                   }}>
-                    <AlertCircle size={64} style={{ 
+                    <AlertCircle size={64} style={{
                       marginBottom: '1rem',
                       color: isDarkMode ? 'rgba(0, 122, 255, 0.6)' : 'rgba(0, 122, 255, 0.6)'
                     }} />
@@ -613,8 +614,8 @@ const WorkHubPage: React.FC = () => {
                 borderRadius: '16px',
                 padding: '2rem',
                 border: isDarkMode ? '1px solid rgba(84, 84, 88, 0.65)' : '1px solid rgba(0, 0, 0, 0.1)',
-                boxShadow: isDarkMode 
-                  ? '0 4px 16px rgba(0, 0, 0, 0.15)' 
+                boxShadow: isDarkMode
+                  ? '0 4px 16px rgba(0, 0, 0, 0.15)'
                   : '0 8px 24px rgba(0, 0, 0, 0.08)',
                 overflow: 'auto',
                 maxHeight: '600px'
@@ -629,8 +630,8 @@ const WorkHubPage: React.FC = () => {
                   }}>
                     <thead>
                       <tr>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -641,8 +642,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Updates</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -653,8 +654,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Subele...</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -665,8 +666,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Fase</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -677,8 +678,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Línea estratégica</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -689,8 +690,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Microcampaña</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -701,8 +702,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Estatus</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -713,8 +714,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Gerente</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -725,8 +726,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Colaboradores</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -737,8 +738,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Nombre del colaborador</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -749,8 +750,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Perfil de colaborador</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -761,8 +762,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Solicitud y entrega</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -773,8 +774,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Semana en curso</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -785,8 +786,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Tipo de item</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -797,8 +798,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Cantidad V...</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -809,8 +810,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Cantidad Pr...</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -821,8 +822,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Cantidad A...</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -833,8 +834,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Fecha de finalización</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -845,8 +846,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Repositorio de co...</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -857,8 +858,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Repositorio firma...</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -869,8 +870,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Enlace de repositorio</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -881,8 +882,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Desarrollo creativo</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -893,8 +894,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Fecha testeo</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -905,8 +906,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Estatus testeo</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -917,8 +918,8 @@ const WorkHubPage: React.FC = () => {
                           background: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(20px)'
                         }}>Entrega al cliente</th>
-                        <th style={{ 
-                          padding: '16px 12px', 
+                        <th style={{
+                          padding: '16px 12px',
                           textAlign: 'left',
                           fontWeight: '600',
                           fontSize: '13px',
@@ -965,8 +966,8 @@ const WorkHubPage: React.FC = () => {
                               </button>
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -979,14 +980,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'fase')}
-                                placeholder="Fase" 
+                                placeholder="Fase"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Fase')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -999,14 +1000,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'linea_estrategica')}
-                                placeholder="Línea estratégica" 
+                                placeholder="Línea estratégica"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Línea estratégica')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1019,14 +1020,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'microcampana')}
-                                placeholder="Microcampaña" 
+                                placeholder="Microcampaña"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Microcampaña')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1039,14 +1040,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'estatus')}
-                                placeholder="Estatus" 
+                                placeholder="Estatus"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Estatus')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1059,14 +1060,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'gerente')}
-                                placeholder="Gerente" 
+                                placeholder="Gerente"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Gerente')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1079,14 +1080,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'colaboradores')}
-                                placeholder="Colaboradores" 
+                                placeholder="Colaboradores"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Colaboradores')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1099,14 +1100,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'nombre_colaborador')}
-                                placeholder="Nombre del colaborador" 
+                                placeholder="Nombre del colaborador"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Nombre del colaborador')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1119,14 +1120,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'perfil_colaborador')}
-                                placeholder="Perfil de colaborador" 
+                                placeholder="Perfil de colaborador"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Perfil de colaborador')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1139,14 +1140,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'solicitud_entrega')}
-                                placeholder="Solicitud y entrega" 
+                                placeholder="Solicitud y entrega"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Solicitud y entrega')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1159,14 +1160,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'semana_curso')}
-                                placeholder="Semana en curso" 
+                                placeholder="Semana en curso"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Semana en curso')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1179,14 +1180,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'tipo_item')}
-                                placeholder="Tipo de item" 
+                                placeholder="Tipo de item"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Tipo de item')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1199,14 +1200,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'cantidad_v')}
-                                placeholder="Cantidad V..." 
+                                placeholder="Cantidad V..."
                                 readOnly
                                 onClick={() => openModal(item.id, 'Cantidad V...', 'number')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1219,14 +1220,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'cantidad_pr')}
-                                placeholder="Cantidad Pr..." 
+                                placeholder="Cantidad Pr..."
                                 readOnly
                                 onClick={() => openModal(item.id, 'Cantidad Pr...', 'number')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1239,14 +1240,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'cantidad_a')}
-                                placeholder="Cantidad A..." 
+                                placeholder="Cantidad A..."
                                 readOnly
                                 onClick={() => openModal(item.id, 'Cantidad A...', 'number')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="date" 
+                              <input
+                                type="date"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1270,8 +1271,8 @@ const WorkHubPage: React.FC = () => {
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1284,14 +1285,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'repositorio_co')}
-                                placeholder="Repositorio de co..." 
+                                placeholder="Repositorio de co..."
                                 readOnly
                                 onClick={() => openModal(item.id, 'Repositorio de co...')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1304,14 +1305,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'repositorio_firma')}
-                                placeholder="Repositorio firma..." 
+                                placeholder="Repositorio firma..."
                                 readOnly
                                 onClick={() => openModal(item.id, 'Repositorio firma...')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1324,14 +1325,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'enlace_repositorio')}
-                                placeholder="Enlace de repositorio" 
+                                placeholder="Enlace de repositorio"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Enlace de repositorio')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1344,14 +1345,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'desarrollo_creativo')}
-                                placeholder="Desarrollo creativo" 
+                                placeholder="Desarrollo creativo"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Desarrollo creativo')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="date" 
+                              <input
+                                type="date"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1375,8 +1376,8 @@ const WorkHubPage: React.FC = () => {
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1389,14 +1390,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'estatus_testeo')}
-                                placeholder="Estatus testeo" 
+                                placeholder="Estatus testeo"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Estatus testeo')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1409,14 +1410,14 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'entrega_cliente')}
-                                placeholder="Entrega al cliente" 
+                                placeholder="Entrega al cliente"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Entrega al cliente')}
                               />
                             </td>
                             <td style={{ padding: '12px' }}>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 style={{
                                   width: '100%',
                                   padding: '8px 12px',
@@ -1429,7 +1430,7 @@ const WorkHubPage: React.FC = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 value={getFieldValue(item.id, 'nombre_archivo')}
-                                placeholder="Nombre del archivo" 
+                                placeholder="Nombre del archivo"
                                 readOnly
                                 onClick={() => openModal(item.id, 'Nombre del archivo')}
                               />
@@ -1438,18 +1439,18 @@ const WorkHubPage: React.FC = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={25} style={{ 
-                            textAlign: 'center', 
+                          <td colSpan={25} style={{
+                            textAlign: 'center',
                             padding: '4rem 2rem',
                             opacity: 0.6
                           }}>
-                            <div style={{ 
+                            <div style={{
                               display: 'flex',
                               flexDirection: 'column',
                               alignItems: 'center',
                               gap: '1rem'
                             }}>
-                              <Briefcase size={64} style={{ 
+                              <Briefcase size={64} style={{
                                 color: isDarkMode ? 'rgba(0, 122, 255, 0.6)' : 'rgba(0, 122, 255, 0.6)'
                               }} />
                               <div className="empty-project-content">
@@ -1474,7 +1475,7 @@ const WorkHubPage: React.FC = () => {
             <span className="footer-text">© 2025 Espora Hub</span>
           </div>
           <div className="footer-right">
-            <button 
+            <button
               className="logout-btn"
               onClick={() => setShowLogoutDialog(true)}
             >

@@ -5,6 +5,7 @@ import { useAuthStore } from '../stores/authStore';
 import { hasPermission } from '../data/users';
 import Logo from '../components/Logo';
 import UserAvatar from '../components/UserAvatar';
+import ThemeToggle from '../components/ThemeToggle';
 import CreateAccountModal from '../components/CreateAccountModal';
 import SelectAccountModal from '../components/SelectAccountModal';
 import LogoutDialog from '../components/LogoutDialog';
@@ -21,11 +22,11 @@ const OverviewPage: React.FC = () => {
   const [clientName, setClientName] = useState('');
   const [showAccessDeniedModal, setShowAccessDeniedModal] = useState(false);
   const [deniedFeature, setDeniedFeature] = useState('');
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
   const { logout, user } = useAuthStore();
-  
+
   const handleThemeToggle = () => {
     if (isDarkMode) {
       document.body.classList.remove('dark-theme');
@@ -42,15 +43,15 @@ const OverviewPage: React.FC = () => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -105,7 +106,7 @@ const OverviewPage: React.FC = () => {
       <header className="clean-header">
         <div className="header-content">
           <div className="header-left">
-            <button 
+            <button
               onClick={() => navigate('/overview-main')}
               className="back-button"
             >
@@ -113,7 +114,7 @@ const OverviewPage: React.FC = () => {
               <span>Overview</span>
             </button>
           </div>
-          
+
           <div className="header-center">
             <Logo />
             <div className="header-title">
@@ -121,16 +122,13 @@ const OverviewPage: React.FC = () => {
               <p>Crear y gestionar cuentas del sistema</p>
             </div>
           </div>
-          
+
           <div className="header-right">
             <UserAvatar showName size="md" />
-            <button 
-              className="theme-toggle-btn"
-              onClick={handleThemeToggle}
-              title={isDarkMode ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-            >
-              {isDarkMode ? '☀️' : '🌙'}
-            </button>
+            <ThemeToggle
+              isDarkMode={isDarkMode}
+              onToggle={handleThemeToggle}
+            />
           </div>
         </div>
       </header>
@@ -140,21 +138,21 @@ const OverviewPage: React.FC = () => {
         <div className="content-container">
           {/* Configuration Options Grid */}
           <section className="actions-section">
-            <div className="actions-grid" style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(2, 1fr)', 
+            <div className="actions-grid" style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
               gap: '2rem',
               maxWidth: '800px',
               margin: '0 auto'
             }}>
               {configurationOptions.map((option, index) => (
-                <div 
-                  key={option.id} 
+                <div
+                  key={option.id}
                   className="icloud-account-card"
-                  style={{ 
+                  style={{
                     animationDelay: `${index * 0.1}s`,
                     position: 'relative',
-                    background: option.id === 'create-account' 
+                    background: option.id === 'create-account'
                       ? 'linear-gradient(135deg, #4FC3F7 0%, #29B6F6 25%, #03A9F4 50%, #0288D1 75%, #0277BD 100%)'
                       : 'linear-gradient(135deg, #374151 0%, #1F2937 25%, #111827 50%, #0F172A 75%, #020617 100%)',
                     boxShadow: option.id === 'create-account'
@@ -173,12 +171,12 @@ const OverviewPage: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  
+
                   {/* Account info */}
                   <div className="account-info">
                     <h3 className="account-name">{option.name}</h3>
                   </div>
-                  
+
                   {/* Position badge */}
                   <div className="position-badge">
                     {option.position}
@@ -197,7 +195,7 @@ const OverviewPage: React.FC = () => {
             <span className="footer-text">© 2025 Espora Hub</span>
           </div>
           <div className="footer-right">
-            <button 
+            <button
               className="logout-btn"
               onClick={() => setShowLogoutDialog(true)}
             >
@@ -212,18 +210,18 @@ const OverviewPage: React.FC = () => {
         isOpen={showLogoutDialog}
         onClose={() => setShowLogoutDialog(false)}
       />
-      
+
       <CreateAccountModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onCreateAccount={setClientName}
       />
-      
+
       <SelectAccountModal
         isOpen={isSelectModalOpen}
         onClose={() => setIsSelectModalOpen(false)}
       />
-      
+
       <AccessDeniedModal
         isOpen={showAccessDeniedModal}
         onClose={() => setShowAccessDeniedModal(false)}

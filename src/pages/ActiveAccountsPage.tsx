@@ -4,6 +4,7 @@ import { LogOut, User, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import Logo from '../components/Logo';
 import UserAvatar from '../components/UserAvatar';
+import ThemeToggle from '../components/ThemeToggle';
 import LogoutDialog from '../components/LogoutDialog';
 import '../styles/overview-clean.css';
 import '../styles/overview-clean.css';
@@ -103,13 +104,10 @@ const ActiveAccountsPage: React.FC = () => {
           
           <div className="header-right">
             <UserAvatar showName size="md" />
-            <button 
-              className="theme-toggle-btn"
-              onClick={handleThemeToggle}
-              title={isDarkMode ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-            >
-              {isDarkMode ? '☀️' : '🌙'}
-            </button>
+            <ThemeToggle 
+              isDarkMode={isDarkMode} 
+              onToggle={handleThemeToggle} 
+            />
           </div>
         </div>
       </header>

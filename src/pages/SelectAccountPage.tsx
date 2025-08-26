@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, User, ArrowLeft } from 'lucide-react';
+import { LogOut, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import Logo from '../components/Logo';
 import UserAvatar from '../components/UserAvatar';
+import ThemeToggle from '../components/ThemeToggle';
 import LogoutDialog from '../components/LogoutDialog';
 import '../styles/overview-clean.css';
 
@@ -11,11 +12,11 @@ const SelectAccountPage: React.FC = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
   const { logout } = useAuthStore();
-  
+
   const handleThemeToggle = () => {
     if (isDarkMode) {
       document.body.classList.remove('dark-theme');
@@ -32,15 +33,15 @@ const SelectAccountPage: React.FC = () => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -55,8 +56,8 @@ const SelectAccountPage: React.FC = () => {
     { id: 6, name: 'Laura Hernández', position: 'Diputada Local', color: 'text-teal-500', isActive: true }
   ];
 
-  const [accountStatuses, setAccountStatuses] = useState<{[key: number]: boolean}>(() => {
-    const initialStatuses: {[key: number]: boolean} = {};
+  const [accountStatuses, setAccountStatuses] = useState<{ [key: number]: boolean }>(() => {
+    const initialStatuses: { [key: number]: boolean } = {};
     accounts.forEach(account => {
       initialStatuses[account.id] = account.isActive;
     });
@@ -72,9 +73,9 @@ const SelectAccountPage: React.FC = () => {
   };
 
   const handleAccountSelect = (accountName: string, position: string) => {
-    navigate('/client-dashboard', { 
-      state: { 
-        clientName: `${accountName} - ${position}` 
+    navigate('/client-dashboard', {
+      state: {
+        clientName: `${accountName} - ${position}`
       }
     });
   };
@@ -85,7 +86,7 @@ const SelectAccountPage: React.FC = () => {
       <header className="clean-header">
         <div className="header-content">
           <div className="header-left">
-            <button 
+            <button
               onClick={() => navigate('/overview')}
               className="back-button"
             >
@@ -93,7 +94,7 @@ const SelectAccountPage: React.FC = () => {
               <span>Configuración</span>
             </button>
           </div>
-          
+
           <div className="header-center">
             <Logo />
             <div className="header-title">
@@ -101,16 +102,13 @@ const SelectAccountPage: React.FC = () => {
               <p>Elige una cuenta para continuar</p>
             </div>
           </div>
-          
+
           <div className="header-right">
             <UserAvatar showName size="md" />
-            <button 
-              className="theme-toggle-btn"
-              onClick={handleThemeToggle}
-              title={isDarkMode ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-            >
-              {isDarkMode ? '☀️' : '🌙'}
-            </button>
+            <ThemeToggle
+              isDarkMode={isDarkMode}
+              onToggle={handleThemeToggle}
+            />
           </div>
         </div>
       </header>
@@ -120,21 +118,21 @@ const SelectAccountPage: React.FC = () => {
         <div className="content-container">
           {/* Accounts Grid */}
           <section className="actions-section">
-            <div className="actions-grid" style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(6, 1fr)', 
+            <div className="actions-grid" style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(6, 1fr)',
               gap: '2rem',
               maxWidth: '1200px',
               margin: '0 auto'
             }}>
               {accounts.map((account, index) => (
-                <div 
-                  key={account.id} 
+                <div
+                  key={account.id}
                   className="icloud-account-card"
-                  style={{ 
+                  style={{
                     animationDelay: `${index * 0.1}s`,
                     position: 'relative',
-                    background: accountStatuses[account.id] 
+                    background: accountStatuses[account.id]
                       ? 'linear-gradient(135deg, #4ADE80 0%, #22C55E 25%, #16A34A 50%, #15803D 75%, #166534 100%)'
                       : 'linear-gradient(135deg, #EF4444 0%, #DC2626 25%, #B91C1C 50%, #991B1B 75%, #7F1D1D 100%)',
                     boxShadow: accountStatuses[account.id]
@@ -144,16 +142,16 @@ const SelectAccountPage: React.FC = () => {
                   onClick={() => handleAccountSelect(account.name, account.position)}
                 >
                   {/* Status dot - green for active, red for inactive */}
-                  <div 
+                  <div
                     className="account-status-dot"
                     style={{
                       background: accountStatuses[account.id] ? '#34C759' : '#FF3B30',
-                      boxShadow: accountStatuses[account.id] 
+                      boxShadow: accountStatuses[account.id]
                         ? '0 0 0 1px rgba(52, 199, 89, 0.3), 0 2px 8px rgba(52, 199, 89, 0.4)'
                         : '0 0 0 1px rgba(255, 59, 48, 0.3), 0 2px 8px rgba(255, 59, 48, 0.4)'
                     }}
                   ></div>
-                  
+
                   {/* User avatar circle */}
                   <div className="user-avatar-circle">
                     <div className="avatar-icon">
@@ -161,12 +159,12 @@ const SelectAccountPage: React.FC = () => {
                       <div className="avatar-body"></div>
                     </div>
                   </div>
-                  
+
                   {/* Account info */}
                   <div className="account-info">
                     <h3 className="account-name">{account.name}</h3>
                   </div>
-                  
+
                   {/* Position badge */}
                   <div className="position-badge">
                     {account.position}
@@ -185,7 +183,7 @@ const SelectAccountPage: React.FC = () => {
             <span className="footer-text">© 2025 Espora Hub</span>
           </div>
           <div className="footer-right">
-            <button 
+            <button
               className="logout-btn"
               onClick={() => setShowLogoutDialog(true)}
             >

@@ -5,6 +5,7 @@ import { useAuthStore } from '../stores/authStore';
 import { hasPermission } from '../data/users';
 import Logo from '../components/Logo';
 import UserAvatar from '../components/UserAvatar';
+import ThemeToggle from '../components/ThemeToggle';
 import LogoutDialog from '../components/LogoutDialog';
 import AccessDeniedModal from '../components/AccessDeniedModal';
 import '../styles/overview-clean.css';
@@ -17,11 +18,11 @@ const ClientDashboardPage: React.FC = () => {
   const [clientName, setClientName] = useState('');
   const [showAccessDeniedModal, setShowAccessDeniedModal] = useState(false);
   const [deniedFeature, setDeniedFeature] = useState('');
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
   const { logout, user } = useAuthStore();
-  
+
   const handleThemeToggle = () => {
     if (isDarkMode) {
       document.body.classList.remove('dark-theme');
@@ -37,15 +38,15 @@ const ClientDashboardPage: React.FC = () => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   useEffect(() => {
     // Get client name from location state if available
     const state = location.state as { clientName?: string };
@@ -53,7 +54,7 @@ const ClientDashboardPage: React.FC = () => {
       setClientName(state.clientName);
     }
   }, [location]);
-  
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -96,7 +97,7 @@ const ClientDashboardPage: React.FC = () => {
       setShowAccessDeniedModal(true);
       return;
     }
-    
+
     // Si tiene permisos o no se requieren permisos especiales para esta sección
     switch (item.id) {
       case 'expediente':
@@ -123,7 +124,7 @@ const ClientDashboardPage: React.FC = () => {
       <header className="clean-header">
         <div className="header-content">
           <div className="header-left">
-            <button 
+            <button
               onClick={() => navigate('/dashboard')}
               className="back-button"
             >
@@ -131,7 +132,7 @@ const ClientDashboardPage: React.FC = () => {
               <span>Menú</span>
             </button>
           </div>
-          
+
           <div className="header-center">
             <Logo />
             <div className="header-title">
@@ -148,16 +149,13 @@ const ClientDashboardPage: React.FC = () => {
               )}
             </div>
           </div>
-          
+
           <div className="header-right">
             <UserAvatar showName size="md" />
-            <button 
-              className="theme-toggle-btn"
-              onClick={handleThemeToggle}
-              title={isDarkMode ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-            >
-              {isDarkMode ? '☀️' : '🌙'}
-            </button>
+            <ThemeToggle
+              isDarkMode={isDarkMode}
+              onToggle={handleThemeToggle}
+            />
           </div>
         </div>
       </header>
@@ -171,26 +169,26 @@ const ClientDashboardPage: React.FC = () => {
               <h2>Servicios Disponibles</h2>
               <p>Selecciona un servicio para continuar</p>
             </div>
-            
+
             <div className="actions-grid">
               {menuItems.map((item, index) => (
-                <div 
-                  key={item.id} 
+                <div
+                  key={item.id}
                   className="action-card"
-                  style={{ 
+                  style={{
                     animationDelay: `${index * 0.1}s`
                   }}
                   onClick={() => handleMenuItemClick(item)}
                 >
                   <div className="card-header">
-                    <div 
+                    <div
                       className="card-icon"
                       style={{ backgroundColor: item.color }}
                     >
-                     {React.cloneElement(item.icon as React.ReactElement, { size: 40 })}
+                      {React.cloneElement(item.icon as React.ReactElement, { size: 40 })}
                     </div>
                   </div>
-                  
+
                   <div className="card-content">
                     <h3>{item.label}</h3>
                   </div>
@@ -208,7 +206,7 @@ const ClientDashboardPage: React.FC = () => {
             <span className="footer-text">© 2025 Espora Hub</span>
           </div>
           <div className="footer-right">
-            <button 
+            <button
               className="logout-btn"
               onClick={() => setShowLogoutDialog(true)}
             >
@@ -223,7 +221,7 @@ const ClientDashboardPage: React.FC = () => {
         isOpen={showLogoutDialog}
         onClose={() => setShowLogoutDialog(false)}
       />
-      
+
       <AccessDeniedModal
         isOpen={showAccessDeniedModal}
         onClose={() => setShowAccessDeniedModal(false)}
