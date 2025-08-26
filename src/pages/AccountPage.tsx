@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
-import Logo from '@/components/generals/Logo';
-import LogoutDialog from '@/components/generals/LogoutDialog';
+import PageHeader from '@/components/generals/PageHeader';
 import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import { useAuthStore } from '@/stores/authStore';
 import { hasPermission } from '@/data/users';
@@ -22,7 +20,6 @@ const AccountPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
-  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [clientName, setClientName] = useState('');
   const [showAccessDeniedModal, setShowAccessDeniedModal] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
@@ -38,6 +35,17 @@ const AccountPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
+
+  const handleThemeToggle = () => {
+    if (isDarkMode) {
+      document.body.classList.remove('dark-theme');
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+      document.body.classList.add('dark-theme');
+    }
+    setIsDarkMode(!isDarkMode);
+  };
 
   // Listen for theme changes
   useEffect(() => {
@@ -164,6 +172,15 @@ const AccountPage: React.FC = () => {
     });
     return initialData;
   });
+
+  // Extract client name without extra information
+  const getCleanClientName = (fullName: string) => {
+    if (!fullName) return 'Cliente';
+    // Remove anything after " - " if it exists
+    return fullName.split(' - ')[0];
+  };
+
+  const cleanClientName = getCleanClientName(clientName);
 
   // Define currentTab early so it can be used in functions below
   const currentTab = tabsData[activeTab];
@@ -310,56 +327,23 @@ const AccountPage: React.FC = () => {
   const isSmallSection = currentTab.data.length <= 6; // 6 o menos items = sección pequeña
   return (
     <div className={`account-page ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      <div className="account-header">
-        <div className="account-breadcrumb-container">
-          <span className="account-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="account-breadcrumb-link"
-          >
-            Menú
-          </button>
-          <span className="account-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/overview-main')}
-            className="account-breadcrumb-link"
-          >
-            Overview de cuentas
-          </button>
-          <span className="account-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/overview')}
-            className="account-breadcrumb-link"
-          >
-            Configuración de cuentas
-          </button>
-          <span className="account-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/client-dashboard', { state: { clientName } })}
-            className="account-breadcrumb-link"
-          >
-            {clientName ? clientName.split(' - ')[0] : 'Cliente'}
-          </button>
-        </div>
-
-        <h1 className="client-name">Acuerdo de colaboración</h1>
-
-        <div className="header-buttons">
-          <button
-            className="account-button"
-            onClick={() => setShowLogoutDialog(true)}
-          >
-            <LogOut size={16} />
-            <span>Cerrar sesión</span>
-          </button>
-          <Logo />
-        </div>
-      </div>
-
-
-      <LogoutDialog
-        isOpen={showLogoutDialog}
-        onClose={() => setShowLogoutDialog(false)}
+      <PageHeader
+        title="Acuerdo de colaboración"
+        subtitle={cleanClientName}
+        showBackButton={false}
+        showTitle={true}
+        showSubtitle={true}
+        showLogo={true}
+        breadcrumbs={[
+          { label: 'Menú', onClick: () => navigate('/dashboard') },
+          { label: 'Overview de cuentas', onClick: () => navigate('/overview-main') },
+          { label: 'Configuración de cuentas', onClick: () => navigate('/overview') },
+          { label: cleanClientName, onClick: () => navigate('/client-dashboard', { state: { clientName } }) }
+        ]}
+        isDarkMode={isDarkMode}
+        onThemeToggle={handleThemeToggle}
+        showUserAvatar={true}
+        showUserName={true}
       />
 
       <AccessDeniedModal

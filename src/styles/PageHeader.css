@@ -9,28 +9,40 @@
     transition: all 0.3s ease;
 }
 
-.overview-clean.dark-theme .clean-header {
+/* Dark theme header styles for all containers */
+.overview-clean.dark-theme .clean-header,
+.account-page.dark-theme .clean-header {
     background: rgba(28, 28, 30, 0.4);
     border-bottom-color: rgba(84, 84, 88, 0.65);
 }
 
-.overview-clean.light-theme .clean-header {
+/* Light theme header styles for all containers */
+.overview-clean.light-theme .clean-header,
+.account-page.light-theme .clean-header {
     background: rgba(255, 255, 255, 0.3);
     border-bottom-color: rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem 2rem;
+    max-width: 100%;
+    margin: 0;
+    padding: 1rem 2rem 1rem 0;
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 400px 1fr 200px;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .header-left {
     justify-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+    padding-left: 0;
 }
 
 .header-center {
@@ -66,24 +78,30 @@
     text-decoration: none;
 }
 
-.overview-clean.dark-theme .back-button {
+/* Dark theme back button styles for all containers */
+.overview-clean.dark-theme .back-button,
+.account-page.dark-theme .back-button {
     background: rgba(0, 122, 255, 0.1);
     color: #0A84FF;
     border: 1px solid rgba(0, 122, 255, 0.2);
 }
 
-.overview-clean.dark-theme .back-button:hover {
+.overview-clean.dark-theme .back-button:hover,
+.account-page.dark-theme .back-button:hover {
     background: rgba(0, 122, 255, 0.2);
     transform: scale(1.05);
 }
 
-.overview-clean.light-theme .back-button {
+/* Light theme back button styles for all containers */
+.overview-clean.light-theme .back-button,
+.account-page.light-theme .back-button {
     background: rgba(0, 122, 255, 0.1);
     color: #007AFF;
     border: 1px solid rgba(0, 122, 255, 0.2);
 }
 
-.overview-clean.light-theme .back-button:hover {
+.overview-clean.light-theme .back-button:hover,
+.account-page.light-theme .back-button:hover {
     background: rgba(0, 122, 255, 0.15);
     transform: scale(1.05);
 }
@@ -132,20 +150,26 @@
     justify-content: center;
 }
 
-.overview-clean.dark-theme .theme-toggle-btn {
+/* Dark theme theme toggle button styles for all containers */
+.overview-clean.dark-theme .theme-toggle-btn,
+.account-page.dark-theme .theme-toggle-btn {
     background: rgba(118, 118, 128, 0.12);
 }
 
-.overview-clean.dark-theme .theme-toggle-btn:hover {
+.overview-clean.dark-theme .theme-toggle-btn:hover,
+.account-page.dark-theme .theme-toggle-btn:hover {
     background: rgba(118, 118, 128, 0.24);
     transform: scale(1.1);
 }
 
-.overview-clean.light-theme .theme-toggle-btn {
+/* Light theme theme toggle button styles for all containers */
+.overview-clean.light-theme .theme-toggle-btn,
+.account-page.light-theme .theme-toggle-btn {
     background: rgba(118, 118, 128, 0.12);
 }
 
-.overview-clean.light-theme .theme-toggle-btn:hover {
+.overview-clean.light-theme .theme-toggle-btn:hover,
+.account-page.light-theme .theme-toggle-btn:hover {
     background: rgba(118, 118, 128, 0.24);
     transform: scale(1.1);
 }
@@ -177,4 +201,169 @@
     .header-right {
         justify-self: center;
     }
+}
+
+/* Breadcrumbs */
+.breadcrumb-container {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.3rem 0.8rem 0.3rem 0.8rem;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.75rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    margin-top: 0.3rem;
+    min-height: 24px;
+    position: absolute;
+    left: 0;
+    right: auto;
+    width: auto;
+    min-width: 150px;
+    max-width: calc(100vw - 400px);
+    margin-left: 0;
+    z-index: 5;
+}
+
+/* When there's no back button, make breadcrumbs more compact */
+.header-left:not(:has(.back-button)) .breadcrumb-container {
+    margin-top: 0;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem 0.4rem 0.8rem;
+    position: absolute;
+    left: 0;
+    right: auto;
+    width: auto;
+    min-width: 150px;
+    max-width: calc(100vw - 400px);
+    margin-left: 0;
+    z-index: 5;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Dark theme breadcrumb container */
+.overview-clean.dark-theme .breadcrumb-container,
+.account-page.dark-theme .breadcrumb-container,
+.expediente-page.dark-theme .breadcrumb-container {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.overview-clean.dark-theme .breadcrumb-container:hover,
+.account-page.dark-theme .breadcrumb-container:hover,
+.expediente-page.dark-theme .breadcrumb-container:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Light theme breadcrumb container */
+.overview-clean.light-theme .breadcrumb-container,
+.account-page.light-theme .breadcrumb-container,
+.expediente-page.light-theme .breadcrumb-container {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.overview-clean.light-theme .breadcrumb-container:hover,
+.account-page.light-theme .breadcrumb-container:hover,
+.expediente-page.light-theme .breadcrumb-container:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.breadcrumb-link {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    position: relative;
+    white-space: nowrap;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: none;
+    flex-shrink: 0;
+}
+
+/* Dark theme breadcrumb links */
+.overview-clean.dark-theme .breadcrumb-link,
+.account-page.dark-theme .breadcrumb-link,
+.expediente-page.dark-theme .breadcrumb-link {
+    color: #0A84FF;
+}
+
+.overview-clean.dark-theme .breadcrumb-link:hover,
+.account-page.dark-theme .breadcrumb-link:hover,
+.expediente-page.dark-theme .breadcrumb-link:hover {
+    color: #409CFF;
+    background: rgba(10, 132, 255, 0.1);
+    transform: scale(1.02);
+}
+
+.overview-clean.dark-theme .breadcrumb-link:active,
+.account-page.dark-theme .breadcrumb-link:active,
+.expediente-page.dark-theme .breadcrumb-link:active {
+    transform: scale(0.98);
+    background: rgba(10, 132, 255, 0.15);
+}
+
+/* Light theme breadcrumb links */
+.overview-clean.light-theme .breadcrumb-link,
+.account-page.light-theme .breadcrumb-link,
+.expediente-page.light-theme .breadcrumb-link {
+    color: #007AFF;
+}
+
+.overview-clean.light-theme .breadcrumb-link:hover,
+.account-page.light-theme .breadcrumb-link:hover,
+.expediente-page.light-theme .breadcrumb-link:hover {
+    color: #0051D5;
+    background: rgba(0, 122, 255, 0.1);
+    transform: scale(1.02);
+}
+
+.overview-clean.light-theme .breadcrumb-link:active,
+.account-page.light-theme .breadcrumb-link:active,
+.expediente-page.light-theme .breadcrumb-link:active {
+    transform: scale(0.98);
+    background: rgba(0, 122, 255, 0.15);
+}
+
+.breadcrumb-separator {
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 300;
+    opacity: 0.5;
+    user-select: none;
+    transition: color 0.3s ease;
+    margin: 0 0.1rem;
+}
+
+/* Dark theme separators */
+.overview-clean.dark-theme .breadcrumb-separator,
+.account-page.dark-theme .breadcrumb-separator,
+.expediente-page.dark-theme .breadcrumb-separator {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Light theme separators */
+.overview-clean.light-theme .breadcrumb-separator,
+.account-page.light-theme .breadcrumb-separator,
+.expediente-page.light-theme .breadcrumb-separator {
+    color: #718096;
 }

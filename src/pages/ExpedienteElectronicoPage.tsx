@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, ChevronLeft, ChevronRight, Check, FileText, User, TrendingUp, ShoppingCart, Award } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, FileText, User, TrendingUp, ShoppingCart, Award } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { hasPermission } from '@/data/users';
 import Logo from '@/components/generals/Logo';
-import LogoutDialog from '@/components/generals/LogoutDialog';
+import PageFooter from '@/components/generals/PageFooter';
 import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import '../styles/expediente-electronico.css';
 
@@ -1684,42 +1684,10 @@ const ExpedienteElectronicoPage: React.FC = () => {
         </div>
       </div>
 
-      <button
-        className="logout-button"
-        onClick={() => setShowLogoutDialog(true)}
-        style={{
-          position: 'fixed',
-          bottom: '2rem',
-          right: '2rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          padding: '0.5rem 1rem',
-          borderRadius: '20px',
-          fontSize: '0.875rem',
-          cursor: 'pointer',
-          zIndex: 10,
-          backdropFilter: 'blur(10px)',
-          transition: 'all 0.2s ease',
-          ...(isDarkMode ? {
-            background: 'rgba(59, 130, 246, 0.15)',
-            border: '1px solid rgba(59, 130, 246, 0.2)',
-            color: 'rgba(255, 255, 255, 0.7)'
-          } : {
-            background: 'rgba(253, 253, 254, 0.95)',
-            color: '#0171E2',
-            border: '2px solid #0171E2',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)'
-          })
-        }}
-      >
-        <LogOut size={16} />
-        <span>Cerrar sesión</span>
-      </button>
-
-      <LogoutDialog
-        isOpen={showLogoutDialog}
-        onClose={() => setShowLogoutDialog(false)}
+      <PageFooter
+        showLogoutDialog={showLogoutDialog}
+        onLogoutClick={() => setShowLogoutDialog(true)}
+        onLogoutDialogClose={() => setShowLogoutDialog(false)}
       />
 
       <AccessDeniedModal
