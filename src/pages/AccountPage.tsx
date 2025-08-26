@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Check, ChevronRight, ChevronLeft, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import Logo from '../components/Logo';
 import LogoutDialog from '../components/LogoutDialog';
 import AccessDeniedModal from '../components/AccessDeniedModal';
@@ -26,7 +26,7 @@ const AccountPage: React.FC = () => {
   const [clientName, setClientName] = useState('');
   const [showAccessDeniedModal, setShowAccessDeniedModal] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const { logout, user } = useAuthStore();
+  const { user } = useAuthStore();
   const [checkedItems, setCheckedItems] = useState<{[key: string]: boolean}>(() => {
     // Intentar cargar los items seleccionados desde localStorage
     const savedItems = storage.getItem<{[key: string]: boolean}>('selectedItems');
@@ -263,18 +263,6 @@ const AccountPage: React.FC = () => {
 
   const isCurrentTabComplete = areCurrentTabItemsComplete();
 
-  // Check if current tab has any selected items with incomplete data
-  const hasIncompleteItemsInCurrentTab = () => {
-    const currentTabItems = formData[currentTab.id];
-    return currentTabItems.some(item => {
-      const isChecked = checkedItems[item.id];
-      if (!isChecked) return false; // Skip unchecked items
-      
-      // Check if required fields are incomplete
-      return item.cost <= 0 || item.quantity <= 0;
-    });
-  };
-
   // Check if a tab has any selected items
   const hasSelectedItemsInTab = (tabId: string) => {
     const tabItems = formData[tabId];
@@ -316,18 +304,6 @@ const AccountPage: React.FC = () => {
   // Check if a tab should be disabled (not completed and not current)
   const isTabDisabled = (tabIndex: number) => {
     return !completedTabs.has(tabIndex) && tabIndex !== activeTab;
-  };
-
-  const nextTab = () => {
-    if (activeTab < tabsData.length - 1) {
-      setActiveTab(activeTab + 1);
-    }
-  };
-
-  const prevTab = () => {
-    if (activeTab > 0) {
-      setActiveTab(activeTab - 1);
-    }
   };
 
   // Determinar si la sección actual es pequeña o grande
