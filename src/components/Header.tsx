@@ -5,7 +5,6 @@ import Logo from './Logo';
 // import FlowEffect from './FlowEffect'; // Temporalmente deshabilitado
 import MeltingText from './MeltingText';
 import '../styles/header.css';
-import '../styles/flow-effect.css';
 
 const Header: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);

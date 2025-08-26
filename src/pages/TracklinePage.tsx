@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ChevronDown } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Logo from '../components/Logo';
 import ThemeToggle from '../components/ThemeToggle';
-import TracklineBackground from '../components/TracklineBackground';
-import '../styles/trackline.css';
-
-const options = [
-  { value: 'all', label: 'Todos los proyectos' },
-  { value: 'active', label: 'Proyectos activos' },
-  { value: 'completed', label: 'Proyectos completados' },
-  { value: 'archived', label: 'Proyectos archivados' }
-];
 
 const TracklinePage: React.FC = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('all');
   const [isDarkMode, setIsDarkMode] = useState(() => 
     document.body.classList.contains('dark-theme')
   );
@@ -49,13 +39,8 @@ const TracklinePage: React.FC = () => {
     }
   };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(e.target.value);
-  };
-
   return (
     <div className={`trackline-page ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      <TracklineBackground />
       <div className="trackline-header">
         <button 
           onClick={() => navigate('/dashboard')}
