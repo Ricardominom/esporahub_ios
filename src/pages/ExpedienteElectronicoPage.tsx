@@ -6,7 +6,6 @@ import { hasPermission } from '../data/users';
 import Logo from '../components/Logo';
 import LogoutDialog from '../components/LogoutDialog';
 import AccessDeniedModal from '../components/AccessDeniedModal';
-import MenuBackground from '../components/MenuBackground';
 import '../styles/expediente-electronico.css';
 
 interface FormData {
@@ -1539,7 +1538,6 @@ const ExpedienteElectronicoPage: React.FC = () => {
 
   return (
     <div className={`expediente-page ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      <MenuBackground />
       <div className="expediente-header">
         <div className="expediente-breadcrumb-container">
           <span className="expediente-breadcrumb-separator">/</span>

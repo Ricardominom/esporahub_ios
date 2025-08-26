@@ -6,7 +6,6 @@ import { hasPermission } from '../data/users';
 import Logo from '../components/Logo';
 import LogoutDialog from '../components/LogoutDialog';
 import AccessDeniedModal from '../components/AccessDeniedModal';
-import MenuBackground from '../components/MenuBackground';
 import '../styles/presentacion-inicial.css';
 
 interface PdfFile {
@@ -136,7 +135,6 @@ const PresentacionInicialPage: React.FC = () => {
 
   return (
     <div className={`presentacion-inicial-page ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      <MenuBackground />
       <div className="presentacion-header">
         <div className="presentacion-breadcrumb-container">
           <span className="presentacion-breadcrumb-separator">/</span>

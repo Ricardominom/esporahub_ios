@@ -5,7 +5,6 @@ import { useAuthStore } from '../stores/authStore';
 import Logo from '../components/Logo';
 import UserAvatar from '../components/UserAvatar';
 import LogoutDialog from '../components/LogoutDialog';
-import MenuBackground from '../components/MenuBackground';
 import '../styles/overview-clean.css';
 
 const OverviewMainPage: React.FC = () => {
@@ -84,7 +83,6 @@ const OverviewMainPage: React.FC = () => {
 
   return (
     <div className={`overview-clean ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      <MenuBackground />
       
       {/* Clean Header */}
       <header className="clean-header">
