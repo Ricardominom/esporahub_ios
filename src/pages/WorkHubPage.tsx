@@ -287,16 +287,7 @@ const WorkHubPage: React.FC = () => {
       fieldType,
       initialValue: currentValue,
       selectOptions,
-      onSave: (value: string) => {
-        const updatedValues = {
-          ...fieldValues,
-          [fieldKey]: value
-        };
-        setFieldValues(updatedValues);
-
-        // Guardar en localStorage
-        storage.setItem('fieldValues', updatedValues);
-      }
+      onSave: () => { }
     });
   };
 
