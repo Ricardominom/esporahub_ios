@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, Circle, LogOut, Trash2 } from 'lucide-react';
-import { User, getAllUsers, hasPermission, getUserById } from '../data/users';
-import Logo from '../components/Logo';
-import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
-import { useAuthStore } from '../stores/authStore';
-import AccessDeniedModal from '../components/AccessDeniedModal';
-import InputModal from '../components/InputModal';
-import LogoutDialog from '../components/LogoutDialog';
-import { storage } from '../utils/storage';
+import { CheckCircle2, Circle, LogOut, Trash2 } from 'lucide-react';
+import { User, getAllUsers, hasPermission } from '@/data/users';
+import Logo from '@/components/Logo';
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
+import { useAuthStore } from '@/stores/authStore';
+import AccessDeniedModal from '@/components/AccessDeniedModal';
+import InputModal from '@/components/InputModal';
+import LogoutDialog from '@/components/LogoutDialog';
+import { storage } from '@/utils/storage';
 import '../styles/checklist-captura.css';
 import '../styles/input-modal.css';
 
@@ -20,6 +20,23 @@ interface ChecklistItem {
   completed: boolean;
 }
 
+interface FormDataItem {
+  id: string;
+  concept: string;
+  cost?: number;
+  quantity?: number;
+  discount?: number;
+  subtotal?: number;
+}
+
+type FormDataSection = { [key: string]: FormDataItem[] };
+
+interface LocationState {
+  clientName?: string;
+  selectedItems?: { [key: string]: boolean };
+  allData?: FormDataSection;
+}
+
 interface TaskAssignment {
   itemId: string;
   userId: string;
@@ -27,6 +44,7 @@ interface TaskAssignment {
   dueDate: string;
   section: string;
   sectionId: string;
+  completed?: boolean;
 }
 
 const ChecklistCapturaPage: React.FC = () => {
@@ -39,7 +57,7 @@ const ChecklistCapturaPage: React.FC = () => {
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [showAccessDeniedModal, setShowAccessDeniedModal] = useState(false);
-  const { logout, user: currentUser } = useAuthStore();
+  const { user: currentUser } = useAuthStore();
   const [taskAssignments, setTaskAssignments] = useState<TaskAssignment[]>(() => {
     try {
       // Intentar cargar las asignaciones de tareas desde localStorage
@@ -50,9 +68,9 @@ const ChecklistCapturaPage: React.FC = () => {
       return [];
     }
   });
-  const [fieldValues, setFieldValues] = useState<{[key: string]: string}>(() => {
+  const [fieldValues, setFieldValues] = useState<{ [key: string]: string }>(() => {
     // Intentar cargar los valores de los campos desde localStorage
-    const savedValues = storage.getItem<{[key: string]: string}>('fieldValues');
+    const savedValues = storage.getItem<{ [key: string]: string }>('fieldValues');
     return savedValues || {};
   });
   const [modalState, setModalState] = useState({
@@ -61,21 +79,21 @@ const ChecklistCapturaPage: React.FC = () => {
     fieldType: 'text' as 'text' | 'number' | 'select',
     initialValue: '',
     selectOptions: [] as { value: string; label: string }[],
-    onSave: (value: string) => {}
+    onSave: (value: string) => { console.log('Default save function', value); }
   });
-  
+
   // Estado para la fecha de vencimiento de las tareas
-  const [dueDates, setDueDates] = useState<{[key: string]: string}>(() => {
+  const [dueDates, setDueDates] = useState<{ [key: string]: string }>(() => {
     try {
       // Intentar cargar las fechas desde localStorage
-      const savedDates = storage.getItem<{[key: string]: string}>('dueDates');
+      const savedDates = storage.getItem<{ [key: string]: string }>('dueDates');
       return savedDates || {};
     } catch (error) {
       console.error('Error loading due dates:', error);
       return {};
     }
   });
-  
+
   // Refs for scroll synchronization
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const tableMainContainerRef = useRef<HTMLDivElement>(null);
@@ -85,7 +103,7 @@ const ChecklistCapturaPage: React.FC = () => {
     const availableUsers = getAllUsers();
     setUsers(availableUsers);
   }, []);
-  
+
   // Get theme from body class
   const isDarkMode = document.body.classList.contains('dark-theme');
 
@@ -95,9 +113,9 @@ const ChecklistCapturaPage: React.FC = () => {
       // Check if we're scrolling over the table area
       const tableContainer = tableMainContainerRef.current;
       const horizontalScroll = horizontalScrollRef.current;
-      
+
       if (!tableContainer || !horizontalScroll) return;
-      
+
       // Get the table container bounds
       const rect = tableContainer.getBoundingClientRect();
       const isOverTable = (
@@ -106,25 +124,25 @@ const ChecklistCapturaPage: React.FC = () => {
         e.clientY >= rect.top &&
         e.clientY <= rect.bottom
       );
-      
+
       if (isOverTable) {
         // Prevent default vertical scroll
         e.preventDefault();
-        
+
         // Convert vertical wheel movement to horizontal scroll
         const scrollAmount = e.deltaY * 2; // Multiply for faster scroll
         const currentScrollLeft = tableContainer.scrollLeft;
         const newScrollLeft = currentScrollLeft + scrollAmount;
-        
+
         // Apply scroll to both containers
         tableContainer.scrollLeft = newScrollLeft;
         horizontalScroll.scrollLeft = newScrollLeft;
       }
     };
-    
+
     // Add event listener to the document
     document.addEventListener('wheel', handleWheelScroll, { passive: false });
-    
+
     // Cleanup
     return () => {
       document.removeEventListener('wheel', handleWheelScroll);
@@ -132,41 +150,22 @@ const ChecklistCapturaPage: React.FC = () => {
   }, []);
 
   // Mapeo de secciones con sus títulos correctos
-  const sectionMapping = {
+  const sectionMapping = useMemo(() => ({
     'estrategia': 'Set Up Estrategia Digital',
-    'antropologicos': 'Estudios Antropológicos', 
+    'antropologicos': 'Estudios Antropológicos',
     'otros-estudios': 'Otros Estudios',
-    'acompanamiento': 'Set Up Acompañamiento Digital',
-    'gerencia': 'Set Up Gerencia Digital',
-    'produccion': 'Set Up Producción',
-    'difusion': 'Set up Difusión'
-  };
-
-  useEffect(() => {
-    const state = location.state as any;
-    if (state && state.clientName) {
-      setClientName(state.clientName);
-    }
-    
-    // Si no hay datos en el state, intentar cargar desde localStorage
-    if (!state || !state.selectedItems || !state.allData) {
-      const savedItems = storage.getItem<{[key: string]: boolean}>('selectedItems');
-      const savedFormData = storage.getItem<{[key: string]: any}>('formData');
-      
-      if (savedItems && savedFormData) {
-        generateChecklistItems(savedItems, savedFormData);
-      }
-    } else {
-      generateChecklistItems(state.selectedItems, state.allData);
-    }
-  }, [location]);
+    'acompanamiento': 'Set Up Acompañamiento',
+    'gerencia': 'Gerencia',
+    'produccion': 'Producción',
+    'difusion': 'Difusión'
+  }), []);
 
   // Función para generar los items del checklist
-  const generateChecklistItems = (selectedItems: {[key: string]: boolean}, allData: {[key: string]: any[]}) => {
+  const generateChecklistItems = useCallback((selectedItems: { [key: string]: boolean }, allData: FormDataSection) => {
     const items: ChecklistItem[] = [];
 
     // Process each section type
-    Object.entries(allData).forEach(([sectionId, data]: [string, any[]]) => {
+    Object.entries(allData).forEach(([sectionId, data]: [string, FormDataItem[]]) => {
       data.forEach((item) => {
         if (selectedItems[item.id]) {
           const sectionName = sectionMapping[sectionId as keyof typeof sectionMapping] || sectionId;
@@ -187,25 +186,44 @@ const ChecklistCapturaPage: React.FC = () => {
     items.sort((a, b) => {
       const sectionIndexA = sectionOrder.indexOf(a.sectionId);
       const sectionIndexB = sectionOrder.indexOf(b.sectionId);
-      
+
       if (sectionIndexA !== sectionIndexB) {
         return sectionIndexA - sectionIndexB;
       }
-      
+
       // If same section, sort by item ID
       return a.id.localeCompare(b.id);
     });
 
     setChecklistItems(items);
-  };
+  }, [sectionMapping]);
 
   useEffect(() => {
-    setIsVisible(true); 
-    
+    const state = location.state as LocationState;
+    if (state && state.clientName) {
+      setClientName(state.clientName);
+    }
+
+    // Si no hay datos en el state, intentar cargar desde localStorage
+    if (!state || !state.selectedItems || !state.allData) {
+      const savedItems = storage.getItem<{ [key: string]: boolean }>('selectedItems');
+      const savedFormData = storage.getItem<FormDataSection>('formData');
+
+      if (savedItems && savedFormData) {
+        generateChecklistItems(savedItems, savedFormData);
+      }
+    } else {
+      generateChecklistItems(state.selectedItems, state.allData);
+    }
+  }, [location, generateChecklistItems]);
+
+  useEffect(() => {
+    setIsVisible(true);
+
     // Cargar el estado de completado de los items desde localStorage
-    const savedCompletedItems = storage.getItem<{[key: string]: boolean}>('completedItems');
+    const savedCompletedItems = storage.getItem<{ [key: string]: boolean }>('completedItems');
     if (savedCompletedItems) {
-      setChecklistItems(prevItems => 
+      setChecklistItems(prevItems =>
         prevItems.map(item => ({
           ...item,
           completed: savedCompletedItems[item.id] || false
@@ -216,23 +234,23 @@ const ChecklistCapturaPage: React.FC = () => {
 
   const toggleItemCompletion = (itemId: string) => {
     // Actualizar el estado de los items
-    const updatedItems = checklistItems.map(item => 
+    const updatedItems = checklistItems.map(item =>
       item.id === itemId ? {
         ...item,
         completed: !item.completed
       } : item
     );
-    
+
     setChecklistItems(updatedItems);
-    
+
     // Guardar el estado de completado en localStorage
     const completedItemsMap = updatedItems.reduce((acc, item) => {
       acc[item.id] = item.completed;
       return acc;
-    }, {} as {[key: string]: boolean});
-    
+    }, {} as { [key: string]: boolean });
+
     storage.setItem('completedItems', completedItemsMap);
-    
+
     // Update task assignments if this item is assigned to someone
     const assignedUserId = getFieldValue(itemId, 'assignedUser');
     if (assignedUserId) {
@@ -240,7 +258,7 @@ const ChecklistCapturaPage: React.FC = () => {
       if (item) {
         // Obtener el nuevo estado de completado
         const isCompleted = updatedItems.find(i => i.id === itemId)?.completed || false;
-        
+
         // Find if there's an existing assignment
         const assignmentIndex = taskAssignments.findIndex(a => a.itemId === itemId);
         if (assignmentIndex >= 0) {
@@ -251,7 +269,7 @@ const ChecklistCapturaPage: React.FC = () => {
             completed: isCompleted
           };
           setTaskAssignments(updatedAssignments);
-          
+
           // Save to localStorage
           storage.setItem('taskAssignments', updatedAssignments);
         } else if (assignedUserId) {
@@ -265,7 +283,7 @@ const ChecklistCapturaPage: React.FC = () => {
             dueDate: dueDates[itemId] || '',
             completed: isCompleted
           };
-          
+
           const newAssignments = [...taskAssignments, newAssignment];
           setTaskAssignments(newAssignments);
           storage.setItem('taskAssignments', newAssignments);
@@ -277,7 +295,7 @@ const ChecklistCapturaPage: React.FC = () => {
   // Función para eliminar un item del checklist
   const handleDeleteItem = (itemId: string) => {
     // Mostrar el modal de confirmación
-    if (currentUser && hasPermission(currentUser, 'edit_checklist')) { 
+    if (currentUser && hasPermission(currentUser, 'edit_checklist')) {
       setItemToDelete(itemId);
     } else {
       // Mostrar modal de acceso denegado
@@ -288,25 +306,19 @@ const ChecklistCapturaPage: React.FC = () => {
   // Función para confirmar la eliminación
   const confirmDelete = () => {
     if (!itemToDelete) return;
-    
+
     setChecklistItems(prev => prev.filter(item => item.id !== itemToDelete));
 
     // Eliminar el item de las asignaciones de tareas
     const updatedAssignments = taskAssignments.filter(assignment => assignment.itemId !== itemToDelete);
     setTaskAssignments(updatedAssignments);
     storage.setItem('taskAssignments', updatedAssignments);
-    
+
     // Eliminar el estado de completado del item
-    const completedItems = storage.getItem<{[key: string]: boolean}>('completedItems') || {};
+    const completedItems = storage.getItem<{ [key: string]: boolean }>('completedItems') || {};
     delete completedItems[itemToDelete];
     storage.setItem('completedItems', completedItems);
-    
-    // Actualizar el conteo de progreso
-    const updatedItems = checklistItems.filter(item => item.id !== itemToDelete);
-    const completedCount = updatedItems.filter(item => item.completed).length;
-    const totalCount = updatedItems.length;
-    const progressPercentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
-    
+
     // También eliminar los valores de campo asociados a este item
     const updatedFieldValues = { ...fieldValues };
     Object.keys(updatedFieldValues).forEach(key => {
@@ -314,10 +326,10 @@ const ChecklistCapturaPage: React.FC = () => {
         delete updatedFieldValues[key];
       }
     });
-    
+
     setFieldValues(updatedFieldValues);
     storage.setItem('fieldValues', updatedFieldValues);
-    
+
     // Cerrar el modal
     setItemToDelete(null);
   };
@@ -342,8 +354,8 @@ const ChecklistCapturaPage: React.FC = () => {
 
   // Función para abrir el modal
   const openModal = (
-    itemId: string, 
-    fieldName: string, 
+    itemId: string,
+    fieldName: string,
     fieldType: 'text' | 'number' | 'select' = 'text',
     selectOptions: { value: string; label: string }[] = []
   ) => {
@@ -351,7 +363,7 @@ const ChecklistCapturaPage: React.FC = () => {
     if (currentUser && hasPermission(currentUser, 'edit_checklist')) {
       const fieldKey = `${itemId}-${fieldName}`;
       const currentValue = fieldValues[fieldKey] || '';
-      
+
       setModalState({
         isOpen: true,
         fieldName,
@@ -364,7 +376,7 @@ const ChecklistCapturaPage: React.FC = () => {
             [fieldKey]: value
           };
           setFieldValues(updatedValues);
-          
+
           // Guardar en localStorage
           storage.setItem('fieldValues', updatedValues);
         }
@@ -403,21 +415,21 @@ const ChecklistCapturaPage: React.FC = () => {
       setFieldValues(updatedValues);
 
       // Si se seleccionó un usuario y existe el item, actualizar las asignaciones de tareas
-      if (userId && item) { 
+      if (userId && item) {
         // Verificar si ya existe una asignación para este item
         const existingAssignmentIndex = taskAssignments.findIndex(
           assignment => assignment.itemId === itemId
         );
-        
+
         if (existingAssignmentIndex >= 0) {
           // Actualizar la asignación existente
           const updatedAssignments = [...taskAssignments];
           updatedAssignments[existingAssignmentIndex] = {
             ...updatedAssignments[existingAssignmentIndex],
             userId: userId,
-           concept: item.concept,
-           section: item.section,
-           sectionId: item.sectionId,
+            concept: item.concept,
+            section: item.section,
+            sectionId: item.sectionId,
             completed: item.completed
           };
           setTaskAssignments(updatedAssignments);
@@ -425,21 +437,21 @@ const ChecklistCapturaPage: React.FC = () => {
         } else {
           // Crear una nueva asignación
           const newAssignment = {
-            itemId, 
-            userId, 
-            concept: item.concept, 
+            itemId,
+            userId,
+            concept: item.concept,
             section: item.section,
             sectionId: item.sectionId,
             dueDate: dueDates[itemId] || '',
             completed: item.completed
           };
-          
+
           const newAssignments = [...taskAssignments, newAssignment];
           setTaskAssignments(newAssignments);
           storage.setItem('taskAssignments', newAssignments);
         }
       }
-      
+
       // Guardar en localStorage
       storage.setItem('fieldValues', updatedValues);
     } else {
@@ -453,18 +465,18 @@ const ChecklistCapturaPage: React.FC = () => {
     // Actualizar el estado de fechas
     const updatedDates = { ...dueDates, [itemId]: date };
     setDueDates(updatedDates);
-    
+
     // Actualizar la asignación de tarea si existe
     const assignmentIndex = taskAssignments.findIndex(a => a.itemId === itemId);
     if (assignmentIndex >= 0) {
-      const updatedAssignments = [...taskAssignments]; 
+      const updatedAssignments = [...taskAssignments];
       updatedAssignments[assignmentIndex].dueDate = date;
       setTaskAssignments(updatedAssignments);
-      
+
       // Guardar en localStorage
       storage.setItem('taskAssignments', updatedAssignments);
     }
-    
+
     // Guardar en localStorage
     storage.setItem('dueDates', updatedDates);
   };
@@ -472,15 +484,15 @@ const ChecklistCapturaPage: React.FC = () => {
   // Efecto para guardar las asignaciones de tareas cuando cambian
   useEffect(() => {
     storage.setItem('taskAssignments', taskAssignments);
-    
+
     // También guardar el estado de completado de los items
     const completedItemsMap = checklistItems.reduce((acc, item) => {
       acc[item.id] = item.completed;
       return acc;
-    }, {} as {[key: string]: boolean});
-    
+    }, {} as { [key: string]: boolean });
+
     storage.setItem('completedItems', completedItemsMap);
-  }, [taskAssignments]);
+  }, [taskAssignments, checklistItems]);
 
   // Opciones para los selects
   const tipoOptions = [
@@ -505,35 +517,35 @@ const ChecklistCapturaPage: React.FC = () => {
         <div className="header-left">
           <div className="breadcrumb-container">
             <span className="breadcrumb-separator">/</span>
-            <button 
+            <button
               onClick={() => navigate('/dashboard')}
               className="breadcrumb-link"
             >
               Menú
             </button>
             <span className="breadcrumb-separator">/</span>
-            <button 
+            <button
               onClick={() => navigate('/overview-main')}
               className="breadcrumb-link"
             >
               Overview
             </button>
             <span className="breadcrumb-separator">/</span>
-            <button 
+            <button
               onClick={() => navigate('/overview')}
               className="breadcrumb-link"
             >
               Configuración
             </button>
             <span className="breadcrumb-separator">/</span>
-            <button 
+            <button
               onClick={() => navigate('/select-account')}
               className="breadcrumb-link"
             >
               Seleccionar
             </button>
             <span className="breadcrumb-separator">/</span>
-            <button 
+            <button
               onClick={() => navigate('/client-dashboard', { state: { clientName } })}
               className="breadcrumb-link"
             >
@@ -545,20 +557,20 @@ const ChecklistCapturaPage: React.FC = () => {
             </span>
           </div>
         </div>
-        
+
         <div className="header-info">
           <h1 className="page-title">Engagement Hands-Off</h1>
           <h2 className="client-name">{clientName}</h2>
         </div>
-        
+
         <div className="header-right">
           <div className="progress-info">
             <span className="progress-text">
               {completedCount} de {totalCount} completados
             </span>
             <div className="progress-bar">
-              <div 
-                className="progress-fill" 
+              <div
+                className="progress-fill"
                 style={{ width: `${progressPercentage}%` }}
               />
             </div>
@@ -567,7 +579,7 @@ const ChecklistCapturaPage: React.FC = () => {
         </div>
       </div>
 
-      <button 
+      <button
         className="logout-button"
         onClick={() => setShowLogoutDialog(true)}
         style={{
@@ -578,7 +590,6 @@ const ChecklistCapturaPage: React.FC = () => {
           alignItems: 'center',
           gap: '0.5rem',
           padding: '0.5rem 1rem',
-          border: 'none',
           borderRadius: '20px',
           fontSize: '0.875rem',
           cursor: 'pointer',
@@ -613,7 +624,7 @@ const ChecklistCapturaPage: React.FC = () => {
       <div className={`checklist-content ${isVisible ? 'visible' : ''}`}>
         <div className="checklist-table-container">
           {/* Barra de scroll horizontal superior */}
-          <div 
+          <div
             ref={horizontalScrollRef}
             className="table-horizontal-scroll"
             onScroll={(e) => {
@@ -624,9 +635,9 @@ const ChecklistCapturaPage: React.FC = () => {
           >
             <div className="table-scroll-content"></div>
           </div>
-          
+
           {/* Contenedor principal con scroll vertical */}
-          <div 
+          <div
             ref={tableMainContainerRef}
             className="table-main-container"
             onScroll={(e) => {
@@ -642,7 +653,7 @@ const ChecklistCapturaPage: React.FC = () => {
                   <th>✓</th>
                   <th>Eliminar</th>
                   <th>Código</th>
-                  <th>Concepto</th> 
+                  <th>Concepto</th>
                   <th>Perfil</th>
                   <th>Tipo</th>
                   <th>Fecha de entrega</th>
@@ -675,305 +686,305 @@ const ChecklistCapturaPage: React.FC = () => {
                 {orderedSections.map((sectionName) => {
                   const items = groupedItems[sectionName];
                   return (
-                  <React.Fragment key={sectionName}>
-                    <tr className="section-header">
-                      <td colSpan={27} className="section-title">
-                        {sectionName}
-                      </td>
-                    </tr>
-                    {items.map((item) => (
-                      <tr key={item.id} className={item.completed ? 'completed' : ''}>
-                        <td className="checkbox-cell">
-                          <button
-                            className="checkbox-button"
-                            onClick={() => toggleItemCompletion(item.id)}
-                          >
-                            {item.completed ? (
-                              <CheckCircle2 size={18} className="check-icon completed" />
-                            ) : (
-                              <Circle size={18} className="check-icon" />
-                            )}
-                          </button>
-                        </td>
-                        <td className="delete-cell">
-                          <button
-                            className="delete-button"
-                            onClick={() => handleDeleteItem(item.id)}
-                            title="Eliminar elemento"
-                          >
-                            <Trash2 size={18} className="delete-icon" />
-                          </button>
-                        </td>
-                        <td className="checklist-item-id">{item.id}</td>
-                        <td className="task-cell" style={{ minWidth: "200px", maxWidth: "200px" }}>{item.concept}</td>
-                        <td>
-                          <select
-                            className="table-input"
-                            value={getFieldValue(item.id, 'assignedUser') || ''}
-                            onChange={(e) => handleUserAssignment(item.id, e.target.value)}
-                            disabled={!currentUser || !hasPermission(currentUser, 'assign_tasks')} 
-                          >
-                            <option value="">Seleccionar...</option>
-                            {users.map(user => (
-                              <option key={user.id} value={user.id}>
-                                {user.name}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'tipo')}
-                            placeholder="Tipo" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Tipo', 'select', tipoOptions)}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="date" 
-                            className="table-input" 
-                            value={dueDates[item.id] || ''}
-                            onChange={(e) => handleDueDateChange(item.id, e.target.value)}
-                            min={new Date().toISOString().split('T')[0]}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'kpi')}
-                            placeholder="KPI" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'KPI')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'meta')}
-                            placeholder="Meta" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Meta')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'frecuencia')}
-                            placeholder="Frecuencia" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Frecuencia')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'duracion')}
-                            placeholder="Duración" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Duración')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'sueldo')}
-                            placeholder="Sueldo/Costo" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Sueldo/Costo', 'number')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'otros_items')}
-                            placeholder="Otros items" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Otros Items')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'otras_cuentas')}
-                            placeholder="Otras Cuentas"
-                            readOnly
-                            onClick={() => openModal(item.id, 'Otras Cuentas', 'select', cuentasOptions)}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'tipo_contratacion')}
-                            placeholder="Tipo de Contratación"
-                            readOnly
-                            onClick={() => openModal(item.id, 'Tipo de Contratación', 'select', contratacionOptions)}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'dias_pago')}
-                            placeholder="Días de pago" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Días de Pago')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'contrato')}
-                            placeholder="Contrato" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Contrato a Firmar')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'propuesta')}
-                            placeholder="Propuesta" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Propuesta')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'escritorio')}
-                            placeholder="Escritorio, silla, etc." 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Escritorio, Silla Etc')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'viajes_desc')}
-                            placeholder="Viajes/Hospedajes desc." 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Viajes/Hospedajes Descriptivo')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'viajes_monto')}
-                            placeholder="Monto viajes" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Viajes/Hospedajes Monto', 'number')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'equipo_computo')}
-                            placeholder="Equipo de cómputo" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Equipo de Cómputo')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'recursos_desc')}
-                            placeholder="Recursos tecnológicos desc." 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Recursos Tecnológicos y Materiales Adicionales Descriptivo')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'recursos_monto')}
-                            placeholder="Monto recursos" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Recursos Tecnológicos y Materiales Adicionales Monto', 'number')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'empresa_desc')}
-                            placeholder="Empresa desc." 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Empresa Descriptivo')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'empresa_monto')}
-                            placeholder="Monto empresa" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Empresa Monto', 'number')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'pauta_desc')}
-                            placeholder="Pauta desc." 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Pauta Descriptivo')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'pauta_monto')}
-                            placeholder="Monto pauta" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Pauta Monto', 'number')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'otros_gastos_desc')}
-                            placeholder="Otros gastos desc." 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Otros Gastos Descriptivos')}
-                          />
-                        </td>
-                        <td>
-                          <input 
-                            type="text" 
-                            className="table-input"
-                            value={getFieldValue(item.id, 'otros_gastos_monto')}
-                            placeholder="Monto otros" 
-                            readOnly
-                            onClick={() => openModal(item.id, 'Otros Gastos Monto', 'number')}
-                          />
+                    <React.Fragment key={sectionName}>
+                      <tr className="section-header">
+                        <td colSpan={27} className="section-title">
+                          {sectionName}
                         </td>
                       </tr>
-                    ))}
-                  </React.Fragment>
-                );
+                      {items.map((item) => (
+                        <tr key={item.id} className={item.completed ? 'completed' : ''}>
+                          <td className="checkbox-cell">
+                            <button
+                              className="checkbox-button"
+                              onClick={() => toggleItemCompletion(item.id)}
+                            >
+                              {item.completed ? (
+                                <CheckCircle2 size={18} className="check-icon completed" />
+                              ) : (
+                                <Circle size={18} className="check-icon" />
+                              )}
+                            </button>
+                          </td>
+                          <td className="delete-cell">
+                            <button
+                              className="delete-button"
+                              onClick={() => handleDeleteItem(item.id)}
+                              title="Eliminar elemento"
+                            >
+                              <Trash2 size={18} className="delete-icon" />
+                            </button>
+                          </td>
+                          <td className="checklist-item-id">{item.id}</td>
+                          <td className="task-cell" style={{ minWidth: "200px", maxWidth: "200px" }}>{item.concept}</td>
+                          <td>
+                            <select
+                              className="table-input"
+                              value={getFieldValue(item.id, 'assignedUser') || ''}
+                              onChange={(e) => handleUserAssignment(item.id, e.target.value)}
+                              disabled={!currentUser || !hasPermission(currentUser, 'assign_tasks')}
+                            >
+                              <option value="">Seleccionar...</option>
+                              {users.map(user => (
+                                <option key={user.id} value={user.id}>
+                                  {user.name}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'tipo')}
+                              placeholder="Tipo"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Tipo', 'select', tipoOptions)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="date"
+                              className="table-input"
+                              value={dueDates[item.id] || ''}
+                              onChange={(e) => handleDueDateChange(item.id, e.target.value)}
+                              min={new Date().toISOString().split('T')[0]}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'kpi')}
+                              placeholder="KPI"
+                              readOnly
+                              onClick={() => openModal(item.id, 'KPI')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'meta')}
+                              placeholder="Meta"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Meta')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'frecuencia')}
+                              placeholder="Frecuencia"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Frecuencia')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'duracion')}
+                              placeholder="Duración"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Duración')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'sueldo')}
+                              placeholder="Sueldo/Costo"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Sueldo/Costo', 'number')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'otros_items')}
+                              placeholder="Otros items"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Otros Items')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'otras_cuentas')}
+                              placeholder="Otras Cuentas"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Otras Cuentas', 'select', cuentasOptions)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'tipo_contratacion')}
+                              placeholder="Tipo de Contratación"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Tipo de Contratación', 'select', contratacionOptions)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'dias_pago')}
+                              placeholder="Días de pago"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Días de Pago')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'contrato')}
+                              placeholder="Contrato"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Contrato a Firmar')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'propuesta')}
+                              placeholder="Propuesta"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Propuesta')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'escritorio')}
+                              placeholder="Escritorio, silla, etc."
+                              readOnly
+                              onClick={() => openModal(item.id, 'Escritorio, Silla Etc')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'viajes_desc')}
+                              placeholder="Viajes/Hospedajes desc."
+                              readOnly
+                              onClick={() => openModal(item.id, 'Viajes/Hospedajes Descriptivo')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'viajes_monto')}
+                              placeholder="Monto viajes"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Viajes/Hospedajes Monto', 'number')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'equipo_computo')}
+                              placeholder="Equipo de cómputo"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Equipo de Cómputo')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'recursos_desc')}
+                              placeholder="Recursos tecnológicos desc."
+                              readOnly
+                              onClick={() => openModal(item.id, 'Recursos Tecnológicos y Materiales Adicionales Descriptivo')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'recursos_monto')}
+                              placeholder="Monto recursos"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Recursos Tecnológicos y Materiales Adicionales Monto', 'number')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'empresa_desc')}
+                              placeholder="Empresa desc."
+                              readOnly
+                              onClick={() => openModal(item.id, 'Empresa Descriptivo')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'empresa_monto')}
+                              placeholder="Monto empresa"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Empresa Monto', 'number')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'pauta_desc')}
+                              placeholder="Pauta desc."
+                              readOnly
+                              onClick={() => openModal(item.id, 'Pauta Descriptivo')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'pauta_monto')}
+                              placeholder="Monto pauta"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Pauta Monto', 'number')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'otros_gastos_desc')}
+                              placeholder="Otros gastos desc."
+                              readOnly
+                              onClick={() => openModal(item.id, 'Otros Gastos Descriptivos')}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="table-input"
+                              value={getFieldValue(item.id, 'otros_gastos_monto')}
+                              placeholder="Monto otros"
+                              readOnly
+                              onClick={() => openModal(item.id, 'Otros Gastos Monto', 'number')}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  );
                 })}
               </tbody>
             </table>
@@ -990,14 +1001,14 @@ const ChecklistCapturaPage: React.FC = () => {
         fieldType={modalState.fieldType}
         selectOptions={modalState.selectOptions}
       />
-      
+
       <DeleteConfirmationModal
         isOpen={itemToDelete !== null}
         onClose={() => setItemToDelete(null)}
         onConfirm={confirmDelete}
         itemName={checklistItems.find(item => item.id === itemToDelete)?.concept || 'este elemento'}
       />
-      
+
       <AccessDeniedModal
         isOpen={showAccessDeniedModal}
         onClose={() => setShowAccessDeniedModal(false)}

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, FileText, Handshake, Settings, Presentation, ArrowLeft } from 'lucide-react';
-import { useAuthStore } from '../stores/authStore';
-import { hasPermission } from '../data/users';
-import Logo from '../components/Logo';
-import UserAvatar from '../components/UserAvatar';
-import ThemeToggle from '../components/ThemeToggle';
-import LogoutDialog from '../components/LogoutDialog';
-import AccessDeniedModal from '../components/AccessDeniedModal';
+import { useAuthStore } from '@/stores/authStore';
+import { hasPermission } from '@/data/users';
+import Logo from '@/components/Logo';
+import UserAvatar from '@/components/UserAvatar';
+import ThemeToggle from '@/components/ThemeToggle';
+import LogoutDialog from '@/components/LogoutDialog';
+import AccessDeniedModal from '@/components/AccessDeniedModal';
 import '../styles/overview-clean.css';
 
 const ClientDashboardPage: React.FC = () => {
@@ -21,7 +21,7 @@ const ClientDashboardPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
-  const { logout, user } = useAuthStore();
+  const { user } = useAuthStore();
 
   const handleThemeToggle = () => {
     if (isDarkMode) {
