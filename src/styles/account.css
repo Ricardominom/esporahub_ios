@@ -47,7 +47,7 @@
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  margin: 0.5rem 0 0 0;
+  margin: 0.6rem 0 0 0;
   min-height: calc(100vh - 120px);
   height: auto;
   position: relative;
@@ -91,7 +91,7 @@
 
 /* Light theme tabs title */
 .account-page.light-theme .tabs-title {
-  color: #2c3e50;
+  color: #000000;
 }
 
 .tabs-list {
@@ -897,129 +897,6 @@
 .account-page.light-theme .continue-button:hover .button-text,
 .account-page.dark-theme .continue-button:hover .button-text {
   color: white !important;
-}
-
-.account-content.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Tabs Navigation */
-.tabs-navigation {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.tabs-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.tabs-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin: 0;
-  transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Dark theme tabs title */
-.account-page.dark-theme .tabs-title {
-  color: white;
-}
-
-/* Light theme tabs title */
-.account-page.light-theme .tabs-title {
-  color: #2c3e50;
-}
-
-.tabs-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 300px;
-  min-width: 300px;
-  flex-shrink: 0;
-}
-
-/* Asegurar que los botones de pestañas ocupen todo el ancho disponible */
-.tab-button {
-  width: 100% !important;
-  min-width: 250px !important;
-  max-width: none !important;
-  box-sizing: border-box !important;
-  text-align: left !important;
-}
-
-.tab-button {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0.65rem;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-align: left;
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  box-sizing: border-box;
-  width: 100%;
-}
-
-/* Dark theme tab button */
-.account-page.dark-theme .tab-button {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.account-page.dark-theme .tab-button:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.account-page.dark-theme .tab-button.active {
-  background: rgba(147, 112, 219, 0.2);
-  border-color: rgba(147, 112, 219, 0.4);
-  color: white;
-}
-
-/* Light theme tab button */
-.account-page.light-theme .tab-button {
-  background: rgba(253, 253, 254, 0.9);
-  border: 1px solid rgba(212, 235, 246, 0.3);
-  color: #4a5568;
-}
-
-.account-page.light-theme .tab-button:hover {
-  background: rgba(253, 253, 254, 1);
-  border-color: rgba(1, 113, 226, 0.2);
-}
-
-.account-page.light-theme .tab-button.active {
-  background: rgba(1, 113, 226, 0.1);
-  border-color: rgba(1, 113, 226, 0.3);
-  color: #0171E2;
-}
-
-/* Disabled state for tab buttons */
-.tab-button.disabled,
-.tab-button:disabled {
-  opacity: 0.4 !important;
-  cursor: not-allowed !important;
-  pointer-events: none !important;
-  transform: none !important;
-}
-
-/* Dark theme disabled tab button */
-.account-page.dark-theme .tab-button.disabled,
-.account-page.dark-theme .tab-button:disabled {
-  background: rgba(255, 255, 255, 0.02) !important;
-  border-color: rgba(255, 255, 255, 0.05) !important;
-  color: rgba(255, 255, 255, 0.3) !important;
 }
 
 .account-page.dark-theme .tab-button.disabled .tab-number,
