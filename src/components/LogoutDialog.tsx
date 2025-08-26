@@ -1,7 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { storage } from '../utils/storage';
-import { useAuthStore } from '../stores/authStore';
+import { storage } from '@/utils/storage';
+import { useAuthStore } from '@/stores/authStore';
 
 interface LogoutDialogProps {
   isOpen: boolean;

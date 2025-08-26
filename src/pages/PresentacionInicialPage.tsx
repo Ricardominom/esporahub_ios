@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, Upload, FileText, Download, Trash2, Eye, Edit2 } from 'lucide-react';
+import { LogOut, Upload, FileText, Download, Trash2,} from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { hasPermission } from '../data/users';
 import Logo from '../components/Logo';

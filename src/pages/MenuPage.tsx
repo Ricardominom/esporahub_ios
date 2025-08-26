@@ -5,15 +5,15 @@ import {
   Search,
   Bot
 } from 'lucide-react';
-import { useAuthStore } from '../stores/authStore';
-import { hasPermission } from '../data/users';
-import LogoutDialog from '../components/LogoutDialog';
-import Logo from '../components/Logo';
-import UserAvatar from '../components/UserAvatar';
-import AccessDeniedModal from '../components/AccessDeniedModal';
-import EsporaIA from '../components/EsporaIA';
-import '../styles/menu.css';
-import '../styles/espora-ia.css';
+import { useAuthStore } from '@/stores/authStore';
+import { hasPermission } from '@/data/users';
+import LogoutDialog from '@/components/LogoutDialog';
+import Logo from '@/components/Logo';
+import UserAvatar from '@/components/UserAvatar';
+import AccessDeniedModal from '@/components/AccessDeniedModal';
+import EsporaIA from '@/components/EsporaIA';
+import '@/styles/menu.css';
+import '@/styles/espora-ia.css';
 
 interface MenuItem {
   id: string;
