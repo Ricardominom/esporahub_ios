@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserCheck, UserX, Settings, LogOut, ArrowLeft } from 'lucide-react';
-import { useAuthStore } from '@/stores/authStore';
 import Logo from '@/components/generals/Logo';
 import UserAvatar from '@/components/generals/UserAvatar';
 import ThemeToggle from '@/components/generals/ThemeToggle';
@@ -15,7 +14,6 @@ const OverviewMainPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
-  const { logout } = useAuthStore();
 
   const overviewItems = [
     {
