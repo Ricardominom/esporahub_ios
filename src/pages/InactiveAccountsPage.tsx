@@ -67,7 +67,7 @@ const InactiveAccountsPage: React.FC = () => {
   return (
     <div className={`overview-clean ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
       <PageHeader
-        title="Cuentas Inactivas"
+        title="Cuentas inactivas"
         subtitle="Gestión de cuentas inactivas del sistema"
         backButtonText="Menú"
         backButtonPath="/dashboard"

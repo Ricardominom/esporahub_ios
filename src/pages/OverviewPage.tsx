@@ -88,7 +88,7 @@ const OverviewPage: React.FC = () => {
   return (
     <div className={`overview-clean ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
       <PageHeader
-        title="Configuración de Cuentas"
+        title="Configuración de cuentas"
         subtitle="Crear y gestionar cuentas del sistema"
         backButtonText="Overview"
         backButtonPath="/overview-main"

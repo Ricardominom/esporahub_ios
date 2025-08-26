@@ -16,7 +16,7 @@ const OverviewMainPage: React.FC = () => {
   const overviewItems = [
     {
       id: 'active-accounts',
-      label: 'Cuentas Activas',
+      label: 'Cuentas activas',
       icon: <UserCheck size={24} />,
       color: '#34C759',
       path: '/active-accounts',
@@ -26,7 +26,7 @@ const OverviewMainPage: React.FC = () => {
     },
     {
       id: 'inactive-accounts',
-      label: 'Cuentas Inactivas',
+      label: 'Cuentas inactivas',
       icon: <UserX size={24} />,
       color: '#FF3B30',
       path: '/inactive-accounts',
@@ -36,7 +36,7 @@ const OverviewMainPage: React.FC = () => {
     },
     {
       id: 'account-config',
-      label: 'Configuración de Cuentas',
+      label: 'Configuración de cuentas',
       icon: <Settings size={24} />,
       color: '#007AFF',
       path: '/overview',
@@ -81,7 +81,7 @@ const OverviewMainPage: React.FC = () => {
   return (
     <div className={`overview-clean ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
       <PageHeader
-        title="Overview de Cuentas"
+        title="Overview de cuentas"
         subtitle="Gestión centralizada de todas las cuentas"
         backButtonText="Menú"
         backButtonPath="/dashboard"
@@ -99,7 +99,7 @@ const OverviewMainPage: React.FC = () => {
           {/* Action Cards */}
           <section className="actions-section">
             <div className="section-header">
-              <h2>Acciones Disponibles</h2>
+              <h2>Acciones disponibles</h2>
               <p>Selecciona una opción para continuar</p>
             </div>
 

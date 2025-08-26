@@ -136,7 +136,7 @@ const ClientDashboardPage: React.FC = () => {
           {/* Action Cards */}
           <section className="actions-section">
             <div className="section-header">
-              <h2>Servicios Disponibles</h2>
+              <h2>Servicios disponibles</h2>
               <p>Selecciona un servicio para continuar</p>
             </div>
 

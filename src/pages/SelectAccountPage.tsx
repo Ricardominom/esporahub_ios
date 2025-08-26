@@ -71,7 +71,7 @@ const SelectAccountPage: React.FC = () => {
   return (
     <div className={`overview-clean ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
       <PageHeader
-        title="Seleccionar Cuenta"
+        title="Seleccionar cuenta"
         subtitle="Elige una cuenta para continuar"
         backButtonText="Configuración"
         backButtonPath="/overview"
