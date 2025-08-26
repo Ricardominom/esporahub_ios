@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, Upload, FileText, Download, Trash2,} from 'lucide-react';
-import { useAuthStore } from '../stores/authStore';
+import { LogOut, Upload, FileText, Download, Trash2, } from 'lucide-react';
+import { useAuthStore } from '@/stores/authStore';
 import { hasPermission } from '../data/users';
-import Logo from '../components/Logo';
-import LogoutDialog from '../components/LogoutDialog';
-import AccessDeniedModal from '../components/AccessDeniedModal';
+import Logo from '@/components/Logo';
+import LogoutDialog from '@/components/LogoutDialog';
+import AccessDeniedModal from '@/components/AccessDeniedModal';
 import '../styles/presentacion-inicial.css';
 
 interface PdfFile {
@@ -26,25 +26,25 @@ const PresentacionInicialPage: React.FC = () => {
   const [pdfFile, setPdfFile] = useState<PdfFile | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [showAccessDeniedModal, setShowAccessDeniedModal] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
-  const { logout, user } = useAuthStore();
-  
+  const { user } = useAuthStore();
+
   // Listen for theme changes
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   useEffect(() => {
     // Get client name from location state if available
     const state = location.state as { clientName?: string };
@@ -52,11 +52,11 @@ const PresentacionInicialPage: React.FC = () => {
       setClientName(state.clientName);
     }
   }, [location]);
-  
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
-  
+
   // Verificar permisos al cargar la página
   useEffect(() => {
     if (user && !hasPermission(user, 'edit_presentacion')) {
@@ -98,7 +98,7 @@ const PresentacionInicialPage: React.FC = () => {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    
+
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile && droppedFile.type === 'application/pdf') {
       handlePdfFile(droppedFile);
@@ -138,35 +138,35 @@ const PresentacionInicialPage: React.FC = () => {
       <div className="presentacion-header">
         <div className="presentacion-breadcrumb-container">
           <span className="presentacion-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/dashboard')}
             className="presentacion-breadcrumb-link"
           >
             Menú
           </button>
           <span className="presentacion-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/overview-main')}
             className="presentacion-breadcrumb-link"
           >
             Overview
           </button>
           <span className="presentacion-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/overview')}
             className="presentacion-breadcrumb-link"
           >
             Configuración
           </button>
           <span className="presentacion-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/select-account')}
             className="presentacion-breadcrumb-link"
           >
             Seleccionar
           </button>
           <span className="presentacion-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/client-dashboard', { state: { clientName } })}
             className="presentacion-breadcrumb-link"
           >
@@ -177,11 +177,11 @@ const PresentacionInicialPage: React.FC = () => {
             presentacion-inicial
           </span>
         </div>
-        
+
         <h1 className="presentacion-title">
           Presentación inicial: {clientName ? clientName.split(' - ')[0] : 'Cliente'}
         </h1>
-        
+
         <div className="header-right">
           <Logo />
         </div>
@@ -239,7 +239,7 @@ const PresentacionInicialPage: React.FC = () => {
 
           {/* Upload Area - 30% */}
           <div className="pdf-upload-section">
-            <div 
+            <div
               className={`upload-area ${isDragOver ? 'drag-over' : ''}`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -283,7 +283,7 @@ const PresentacionInicialPage: React.FC = () => {
         </div>
       </div>
 
-      <button 
+      <button
         className="logout-button"
         onClick={() => setShowLogoutDialog(true)}
         style={{
@@ -294,7 +294,6 @@ const PresentacionInicialPage: React.FC = () => {
           alignItems: 'center',
           gap: '0.5rem',
           padding: '0.5rem 1rem',
-          border: 'none',
           borderRadius: '20px',
           fontSize: '0.875rem',
           cursor: 'pointer',
@@ -321,7 +320,7 @@ const PresentacionInicialPage: React.FC = () => {
         isOpen={showLogoutDialog}
         onClose={() => setShowLogoutDialog(false)}
       />
-      
+
       <AccessDeniedModal
         isOpen={showAccessDeniedModal}
         onClose={() => {
