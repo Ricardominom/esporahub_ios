@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Check, FileText, User, TrendingUp, ShoppingCart, Award } from 'lucide-react';
+import PageHeader from '@/components/generals/PageHeader';
 import { useAuthStore } from '@/stores/authStore';
 import { hasPermission } from '@/data/users';
-import Logo from '@/components/generals/Logo';
 import PageFooter from '@/components/generals/PageFooter';
 import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import '../styles/expediente-electronico.css';
@@ -125,6 +125,17 @@ const ExpedienteElectronicoPage: React.FC = () => {
     document.body.classList.contains('dark-theme')
   );
   const { user } = useAuthStore();
+
+  const handleThemeToggle = () => {
+    if (isDarkMode) {
+      document.body.classList.remove('dark-theme');
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+      document.body.classList.add('dark-theme');
+    }
+    setIsDarkMode(!isDarkMode);
+  };
 
   const [formData, setFormData] = useState<FormData>({
     cliente: '',
@@ -1536,55 +1547,30 @@ const ExpedienteElectronicoPage: React.FC = () => {
     }
   };
 
+  // Clean client name for display (same logic as AccountPage)
+  const cleanClientName = clientName ? clientName.split(' - ')[0] : '';
+
   return (
     <div className={`expediente-page ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      <div className="expediente-header">
-        <div className="expediente-breadcrumb-container">
-          <span className="expediente-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="expediente-breadcrumb-link"
-          >
-            Menú
-          </button>
-          <span className="expediente-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/overview-main')}
-            className="expediente-breadcrumb-link"
-          >
-            Overview de cuentas
-          </button>
-          <span className="expediente-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/overview')}
-            className="expediente-breadcrumb-link"
-          >
-            Configuración de cuentas
-          </button>
-          <span className="expediente-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/select-account')}
-            className="expediente-breadcrumb-link"
-          >
-            Seleccionar cuenta
-          </button>
-          <span className="expediente-breadcrumb-separator">/</span>
-          <button
-            onClick={() => navigate('/client-dashboard', { state: { clientName } })}
-            className="expediente-breadcrumb-link"
-          >
-            {clientName ? clientName.split(' - ')[0] : 'Cliente'}
-          </button>
-        </div>
-
-        <h1 className="expediente-title">
-          Expediente electrónico: {clientName ? clientName.split(' - ')[0] : 'Cliente'}
-        </h1>
-
-        <div className="header-right">
-          <Logo />
-        </div>
-      </div>
+      <PageHeader
+        title="Expediente electrónico"
+        subtitle={cleanClientName}
+        showBackButton={false}
+        showTitle={true}
+        showSubtitle={true}
+        showLogo={true}
+        breadcrumbs={[
+          { label: 'Menú', onClick: () => navigate('/dashboard') },
+          { label: 'Overview de cuentas', onClick: () => navigate('/overview-main') },
+          { label: 'Configuración de cuentas', onClick: () => navigate('/overview') },
+          { label: 'Seleccionar cuenta', onClick: () => navigate('/select-account') },
+          { label: cleanClientName, onClick: () => navigate('/client-dashboard', { state: { clientName } }) }
+        ]}
+        isDarkMode={isDarkMode}
+        onThemeToggle={handleThemeToggle}
+        showUserAvatar={true}
+        showUserName={true}
+      />
 
       <div className={`expediente-content ${isVisible ? 'visible' : ''}`}>
         {/* Barra de progreso */}
