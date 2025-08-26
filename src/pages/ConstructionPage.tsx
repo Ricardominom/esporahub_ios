@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Construction, ArrowLeft, LogOut } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
-import Logo from '../components/Logo';
-import LogoutDialog from '../components/LogoutDialog';
+import Logo from '../components/generals/Logo';
+import LogoutDialog from '../components/generals/LogoutDialog';
 import '../styles/construction.css';
 
 const ConstructionPage: React.FC = () => {

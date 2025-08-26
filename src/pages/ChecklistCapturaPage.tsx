@@ -3,9 +3,9 @@ import { useChecklistLogic } from '@/components/ChecklistCaptura/useChecklistLog
 import ChecklistHeader from '@/components/ChecklistCaptura/ChecklistHeader';
 import ChecklistTableContainer from '@/components/ChecklistCaptura/ChecklistTableContainer';
 import LogoutButton from '@/components/ChecklistCaptura/LogoutButton';
-import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
-import AccessDeniedModal from '@/components/AccessDeniedModal';
-import InputModal from '@/components/InputModal';
+import DeleteConfirmationModal from '@/components/generals/DeleteConfirmationModal';
+import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
+import InputModal from '@/components/generals/InputModal';
 import { User } from '@/data/users';
 import { storage } from '@/utils/storage';
 import '@/styles/checklist-captura.css';

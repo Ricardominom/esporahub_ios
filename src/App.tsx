@@ -1,8 +1,7 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import Header from '@/components/Header';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import ProtectedRoute from '@/components/generals/ProtectedRoute';
 import LoginPage from '@/pages/LoginPage';
 import MenuPage from '@/pages/MenuPage';
 import OverviewMainPage from '@/pages/OverviewMainPage';

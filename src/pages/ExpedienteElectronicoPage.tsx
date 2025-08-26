@@ -3,9 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, ChevronLeft, ChevronRight, Check, FileText, User, TrendingUp, ShoppingCart, Award } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { hasPermission } from '../data/users';
-import Logo from '../components/Logo';
-import LogoutDialog from '../components/LogoutDialog';
-import AccessDeniedModal from '../components/AccessDeniedModal';
+import Logo from '../components/generals/Logo';
+import LogoutDialog from '../components/generals/LogoutDialog';
+import AccessDeniedModal from '../components/generals/AccessDeniedModal';
 import '../styles/expediente-electronico.css';
 
 interface FormData {
@@ -17,7 +17,7 @@ interface FormData {
   ultimaActualizacion: string;
   gradoConfiabilidad: 'nivel1' | 'nivel2' | 'nivel3' | 'nivel4' | '';
   nivelConfiabilidadGeneral: string;
-  
+
   // Pre Venta
   // Generales del cliente
   nombres: string;
@@ -39,12 +39,12 @@ interface FormData {
   ligaSitioWeb: string;
   ligaYoutube: string;
   ligaLinkedin: string;
-  
+
   // Datos demográficos
   poblacionGeneral: string;
   poblacionDigital: string;
   padronElectoral: string;
-  
+
   // Psicográficos
   miedos: string;
   intereses: string;
@@ -52,14 +52,14 @@ interface FormData {
   valores: string;
   envidia: string;
   aspiraciones: string;
-  
+
   // Oportunidad
   frontPresentacion: string;
   motivoEleccion: string;
   tipoPresentacion: string;
   objetivoEstrategiaDigital: string;
   comentariosExtraPresentacion: string;
-  
+
   // Post Venta - Criterios para la presentación
   empresa: string;
   front: string;
@@ -70,7 +70,7 @@ interface FormData {
   extensionProyecto: string;
   presupuestoVenta: string;
   disposicionInvertir: string;
-  
+
   // Post Venta - Información contextual
   anticipacionCuenta: string;
   nombreContacto: string;
@@ -80,7 +80,7 @@ interface FormData {
   sergioJoseEnCampana: string;
   empresaCompetencia: string;
   relacionPrevia: string;
-  
+
   // Post Cierre - Información política
   cargoContratacion: string;
   cargoAspiracion: string;
@@ -89,12 +89,12 @@ interface FormData {
   nombrePartido: string;
   cambioPolitico: string;
   empresaCompetenciaPostCierre: string;
-  
+
   // Post Cierre - Información sobre personalidad del cliente
   aperturaNegocios: string;
   personalidadPredominante: string;
   motivacionPrincipal: string;
-  
+
   // Post Cierre - Retrospectiva de negocios
   compraPrevia: string;
   montoPagado: string;
@@ -106,7 +106,7 @@ interface FormData {
   montoContrato: string;
   montoInvertidoCierre: string;
   decisionCompra: string;
-  
+
   // Post Cierre - Customer Success Management
   recomendacion: string;
   recontratacion: string;
@@ -121,11 +121,11 @@ const ExpedienteElectronicoPage: React.FC = () => {
   const [clientName, setClientName] = useState('');
   const [showAccessDeniedModal, setShowAccessDeniedModal] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
   const { user } = useAuthStore();
-  
+
   const [formData, setFormData] = useState<FormData>({
     cliente: '',
     cuentaAnalitica: '',
@@ -134,7 +134,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
     ultimaActualizacion: new Date().toISOString().split('T')[0],
     gradoConfiabilidad: '',
     nivelConfiabilidadGeneral: '',
-    
+
     // Pre Venta - Generales del cliente
     nombres: '',
     apellidos: '',
@@ -155,12 +155,12 @@ const ExpedienteElectronicoPage: React.FC = () => {
     ligaSitioWeb: '',
     ligaYoutube: '',
     ligaLinkedin: '',
-    
+
     // Pre Venta - Datos demográficos
     poblacionGeneral: '',
     poblacionDigital: '',
     padronElectoral: '',
-    
+
     // Pre Venta - Psicográficos
     miedos: '',
     intereses: '',
@@ -168,14 +168,14 @@ const ExpedienteElectronicoPage: React.FC = () => {
     valores: '',
     envidia: '',
     aspiraciones: '',
-    
+
     // Oportunidad
     frontPresentacion: '',
     motivoEleccion: '',
     tipoPresentacion: '',
     objetivoEstrategiaDigital: '',
     comentariosExtraPresentacion: '',
-    
+
     // Post Venta - Criterios para la presentación
     empresa: '',
     front: '',
@@ -186,7 +186,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
     extensionProyecto: '',
     presupuestoVenta: '',
     disposicionInvertir: '',
-    
+
     // Post Venta - Información contextual
     anticipacionCuenta: '',
     nombreContacto: '',
@@ -196,7 +196,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
     sergioJoseEnCampana: '',
     empresaCompetencia: '',
     relacionPrevia: '',
-    
+
     // Post Cierre - Información política
     cargoContratacion: '',
     cargoAspiracion: '',
@@ -205,12 +205,12 @@ const ExpedienteElectronicoPage: React.FC = () => {
     nombrePartido: '',
     cambioPolitico: '',
     empresaCompetenciaPostCierre: '',
-    
+
     // Post Cierre - Información sobre personalidad del cliente
     aperturaNegocios: '',
     personalidadPredominante: '',
     motivacionPrincipal: '',
-    
+
     // Post Cierre - Retrospectiva de negocios
     compraPrevia: '',
     montoPagado: '',
@@ -222,7 +222,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
     montoContrato: '',
     montoInvertidoCierre: '',
     decisionCompra: '',
-    
+
     // Post Cierre - Customer Success Management
     recomendacion: '',
     recontratacion: '',
@@ -236,7 +236,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
     const totalFields = allFields.length;
     return totalFields > 0 ? Math.round((completedFields / totalFields) * 100) : 0;
   };
-  
+
   const progressPercentage = calculateProgress();
   const metaPercentage = 85; // Meta fija del 85%
   const confiabilidad = Math.min(progressPercentage / 10, 10).toFixed(2); // Escala de 0-10
@@ -273,21 +273,21 @@ const ExpedienteElectronicoPage: React.FC = () => {
       color: 'text-red-500'
     }
   ];
-  
+
   // Listen for theme changes
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   useEffect(() => {
     // Get client name from location state if available
     const state = location.state as { clientName?: string };
@@ -299,11 +299,11 @@ const ExpedienteElectronicoPage: React.FC = () => {
       }));
     }
   }, [location]);
-  
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
-  
+
   // Verificar permisos al cargar la página
   useEffect(() => {
     if (user && !hasPermission(user, 'edit_expediente')) {
@@ -934,10 +934,10 @@ const ExpedienteElectronicoPage: React.FC = () => {
         <div className="form-group">
           <label htmlFor="precio">Precio</label>
           <div style={{ position: 'relative' }}>
-            <span style={{ 
-              position: 'absolute', 
-              left: '1rem', 
-              top: '50%', 
+            <span style={{
+              position: 'absolute',
+              left: '1rem',
+              top: '50%',
               transform: 'translateY(-50%)',
               color: isDarkMode ? 'rgba(255, 255, 255, 0.6)' : '#718096'
             }}>$</span>
@@ -986,10 +986,10 @@ const ExpedienteElectronicoPage: React.FC = () => {
         <div className="form-group">
           <label htmlFor="presupuestoVenta">Presupuesto de venta (proyección)</label>
           <div style={{ position: 'relative' }}>
-            <span style={{ 
-              position: 'absolute', 
-              left: '1rem', 
-              top: '50%', 
+            <span style={{
+              position: 'absolute',
+              left: '1rem',
+              top: '50%',
               transform: 'translateY(-50%)',
               color: isDarkMode ? 'rgba(255, 255, 255, 0.6)' : '#718096'
             }}>$</span>
@@ -1316,10 +1316,10 @@ const ExpedienteElectronicoPage: React.FC = () => {
         <div className="form-group">
           <label htmlFor="montoPagado">Totalidad del monto comprado y pagado</label>
           <div style={{ position: 'relative' }}>
-            <span style={{ 
-              position: 'absolute', 
-              left: '1rem', 
-              top: '50%', 
+            <span style={{
+              position: 'absolute',
+              left: '1rem',
+              top: '50%',
               transform: 'translateY(-50%)',
               color: isDarkMode ? 'rgba(255, 255, 255, 0.6)' : '#718096'
             }}>$</span>
@@ -1415,10 +1415,10 @@ const ExpedienteElectronicoPage: React.FC = () => {
         <div className="form-group">
           <label htmlFor="montoContrato">Monto total establecido en el contrato</label>
           <div style={{ position: 'relative' }}>
-            <span style={{ 
-              position: 'absolute', 
-              left: '1rem', 
-              top: '50%', 
+            <span style={{
+              position: 'absolute',
+              left: '1rem',
+              top: '50%',
               transform: 'translateY(-50%)',
               color: isDarkMode ? 'rgba(255, 255, 255, 0.6)' : '#718096'
             }}>$</span>
@@ -1437,10 +1437,10 @@ const ExpedienteElectronicoPage: React.FC = () => {
         <div className="form-group">
           <label htmlFor="montoInvertidoCierre">Monto total invertido para el cierre de venta</label>
           <div style={{ position: 'relative' }}>
-            <span style={{ 
-              position: 'absolute', 
-              left: '1rem', 
-              top: '50%', 
+            <span style={{
+              position: 'absolute',
+              left: '1rem',
+              top: '50%',
               transform: 'translateY(-50%)',
               color: isDarkMode ? 'rgba(255, 255, 255, 0.6)' : '#718096'
             }}>$</span>
@@ -1541,46 +1541,46 @@ const ExpedienteElectronicoPage: React.FC = () => {
       <div className="expediente-header">
         <div className="expediente-breadcrumb-container">
           <span className="expediente-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/dashboard')}
             className="expediente-breadcrumb-link"
           >
             Menú
           </button>
           <span className="expediente-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/overview-main')}
             className="expediente-breadcrumb-link"
           >
             Overview de cuentas
           </button>
           <span className="expediente-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/overview')}
             className="expediente-breadcrumb-link"
           >
             Configuración de cuentas
           </button>
           <span className="expediente-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/select-account')}
             className="expediente-breadcrumb-link"
           >
             Seleccionar cuenta
           </button>
           <span className="expediente-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/client-dashboard', { state: { clientName } })}
             className="expediente-breadcrumb-link"
           >
             {clientName ? clientName.split(' - ')[0] : 'Cliente'}
           </button>
         </div>
-        
+
         <h1 className="expediente-title">
           Expediente electrónico: {clientName ? clientName.split(' - ')[0] : 'Cliente'}
         </h1>
-        
+
         <div className="header-right">
           <Logo />
         </div>
@@ -1594,22 +1594,22 @@ const ExpedienteElectronicoPage: React.FC = () => {
               <div className="status-label">Llenado</div>
               <div className="status-indicator"></div>
             </div>
-            
+
             <div className="progress-metric">
               <div className="metric-label">funnel st.</div>
               <div className="metric-value">-</div>
             </div>
-            
+
             <div className="progress-metric">
               <div className="metric-label">meta</div>
               <div className="metric-value">{metaPercentage}.00%</div>
             </div>
-            
+
             <div className="progress-metric">
               <div className="metric-label">avance</div>
               <div className="metric-value progress-highlight">{progressPercentage}.00%</div>
             </div>
-            
+
             <div className="progress-metric">
               <div className="metric-label">nvl de confiabilidad</div>
               <div className="metric-value">{confiabilidad}</div>
@@ -1684,7 +1684,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
         </div>
       </div>
 
-      <button 
+      <button
         className="logout-button"
         onClick={() => setShowLogoutDialog(true)}
         style={{
@@ -1721,7 +1721,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
         isOpen={showLogoutDialog}
         onClose={() => setShowLogoutDialog(false)}
       />
-      
+
       <AccessDeniedModal
         isOpen={showAccessDeniedModal}
         onClose={() => {

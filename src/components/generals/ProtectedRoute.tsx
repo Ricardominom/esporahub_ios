@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '../stores/authStore';
-import { hasPermission } from '../data/users';
+import { useAuthStore } from '../../stores/authStore';
+import { hasPermission } from '../../data/users';
 import AccessDeniedModal from './AccessDeniedModal';
 
 interface ProtectedRouteProps {

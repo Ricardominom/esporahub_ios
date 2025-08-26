@@ -3,11 +3,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, FileText, Handshake, Settings, Presentation, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { hasPermission } from '@/data/users';
-import Logo from '@/components/Logo';
-import UserAvatar from '@/components/UserAvatar';
-import ThemeToggle from '@/components/ThemeToggle';
-import LogoutDialog from '@/components/LogoutDialog';
-import AccessDeniedModal from '@/components/AccessDeniedModal';
+import Logo from '@/components/generals/Logo';
+import UserAvatar from '@/components/generals/UserAvatar';
+import ThemeToggle from '@/components/generals/ThemeToggle';
+import LogoutDialog from '@/components/generals/LogoutDialog';
+import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import '../styles/overview-clean.css';
 
 const ClientDashboardPage: React.FC = () => {

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, User, ArrowLeft } from 'lucide-react';
-import Logo from '@/components/Logo';
-import UserAvatar from '@/components/UserAvatar';
-import ThemeToggle from '@/components/ThemeToggle';
-import LogoutDialog from '@/components/LogoutDialog';
-import '../styles/overview-clean.css';
+import { LogOut, ArrowLeft, User } from 'lucide-react';
+import Logo from '@/components/generals/Logo';
+import UserAvatar from '@/components/generals/UserAvatar';
+import ThemeToggle from '@/components/generals/ThemeToggle';
+import LogoutDialog from '@/components/generals/LogoutDialog';
 import '../styles/overview-clean.css';
 
 const ActiveAccountsPage: React.FC = () => {

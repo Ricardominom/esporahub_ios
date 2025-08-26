@@ -3,9 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, Upload, FileText, Download, Trash2, } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { hasPermission } from '../data/users';
-import Logo from '@/components/Logo';
-import LogoutDialog from '@/components/LogoutDialog';
-import AccessDeniedModal from '@/components/AccessDeniedModal';
+import Logo from '@/components/generals/Logo';
+import LogoutDialog from '@/components/generals/LogoutDialog';
+import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import '../styles/presentacion-inicial.css';
 
 interface PdfFile {

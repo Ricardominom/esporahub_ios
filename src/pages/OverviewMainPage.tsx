@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserCheck, UserX, Settings, LogOut, ArrowLeft, Plus } from 'lucide-react';
+import { UserCheck, UserX, Settings, LogOut, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
-import Logo from '../components/Logo';
-import UserAvatar from '../components/UserAvatar';
-import ThemeToggle from '../components/ThemeToggle';
-import LogoutDialog from '../components/LogoutDialog';
+import Logo from '../components/generals/Logo';
+import UserAvatar from '../components/generals/UserAvatar';
+import ThemeToggle from '../components/generals/ThemeToggle';
+import LogoutDialog from '../components/generals/LogoutDialog';
 import '../styles/overview-clean.css';
 
 const OverviewMainPage: React.FC = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
   const { logout } = useAuthStore();
-  
+
   const overviewItems = [
     {
       id: 'active-accounts',
@@ -29,7 +29,7 @@ const OverviewMainPage: React.FC = () => {
       status: 'success'
     },
     {
-      id: 'inactive-accounts', 
+      id: 'inactive-accounts',
       label: 'Cuentas Inactivas',
       icon: <UserX size={24} />,
       color: '#FF3B30',
@@ -55,15 +55,15 @@ const OverviewMainPage: React.FC = () => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -84,12 +84,12 @@ const OverviewMainPage: React.FC = () => {
 
   return (
     <div className={`overview-clean ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      
+
       {/* Clean Header */}
       <header className="clean-header">
         <div className="header-content">
           <div className="header-left">
-            <button 
+            <button
               onClick={() => navigate('/dashboard')}
               className="back-button"
             >
@@ -97,7 +97,7 @@ const OverviewMainPage: React.FC = () => {
               <span>Menú</span>
             </button>
           </div>
-          
+
           <div className="header-center">
             <Logo />
             <div className="header-title">
@@ -105,12 +105,12 @@ const OverviewMainPage: React.FC = () => {
               <p>Gestión centralizada de todas las cuentas</p>
             </div>
           </div>
-          
+
           <div className="header-right">
             <UserAvatar showName size="md" />
-            <ThemeToggle 
-              isDarkMode={isDarkMode} 
-              onToggle={handleThemeToggle} 
+            <ThemeToggle
+              isDarkMode={isDarkMode}
+              onToggle={handleThemeToggle}
             />
           </div>
         </div>
@@ -126,13 +126,13 @@ const OverviewMainPage: React.FC = () => {
               <h2>Acciones Disponibles</h2>
               <p>Selecciona una opción para continuar</p>
             </div>
-            
+
             <div className="actions-grid">
               {overviewItems.map((item, index) => (
-                <div 
-                  key={item.id} 
+                <div
+                  key={item.id}
                   className={`action-card ${item.status}`}
-                  style={{ 
+                  style={{
                     animationDelay: `${index * 0.1}s`
                   }}
                   onClick={() => handleItemClick(item)}
@@ -145,7 +145,7 @@ const OverviewMainPage: React.FC = () => {
                       <span className="card-badge notification-badge notification-badge-outer">{item.count}</span>
                     )}
                   </div>
-                  
+
                   <div className="card-content card-content-overview">
                     <h3 className="card-title-overview">{item.label}</h3>
                     <p className="card-desc-overview">{item.description}</p>
@@ -165,7 +165,7 @@ const OverviewMainPage: React.FC = () => {
             <span className="footer-text">© 2025 Espora Hub</span>
           </div>
           <div className="footer-right">
-            <button 
+            <button
               className="logout-btn"
               onClick={() => setShowLogoutDialog(true)}
             >

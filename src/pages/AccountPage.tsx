@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
-import Logo from '../components/Logo';
-import LogoutDialog from '../components/LogoutDialog';
-import AccessDeniedModal from '../components/AccessDeniedModal';
+import Logo from '../components/generals/Logo';
+import LogoutDialog from '../components/generals/LogoutDialog';
+import AccessDeniedModal from '../components/generals/AccessDeniedModal';
 import { useAuthStore } from '../stores/authStore';
 import { hasPermission } from '../data/users';
 import '../styles/account.css';
@@ -27,15 +27,15 @@ const AccountPage: React.FC = () => {
   const [showAccessDeniedModal, setShowAccessDeniedModal] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const { user } = useAuthStore();
-  const [checkedItems, setCheckedItems] = useState<{[key: string]: boolean}>(() => {
+  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>(() => {
     // Intentar cargar los items seleccionados desde localStorage
-    const savedItems = storage.getItem<{[key: string]: boolean}>('selectedItems');
+    const savedItems = storage.getItem<{ [key: string]: boolean }>('selectedItems');
     return savedItems || {};
   });
   const [completedTabs, setCompletedTabs] = useState<Set<number>>(new Set([0])); // Tab 0 (estrategia) starts unlocked
-  
+
   // Get theme from body class
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
 
@@ -44,12 +44,12 @@ const AccountPage: React.FC = () => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
 
@@ -157,8 +157,8 @@ const AccountPage: React.FC = () => {
     }
   ];
 
-  const [formData, setFormData] = useState<{[key: string]: FormData[]}>(() => {
-    const initialData: {[key: string]: FormData[]} = {};
+  const [formData, setFormData] = useState<{ [key: string]: FormData[] }>(() => {
+    const initialData: { [key: string]: FormData[] } = {};
     tabsData.forEach(tab => {
       initialData[tab.id] = tab.data;
     });
@@ -179,7 +179,7 @@ const AccountPage: React.FC = () => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
-  
+
   // Verificar permisos al cargar la página
   useEffect(() => {
     if (user && !hasPermission(user, 'edit_accounts')) {
@@ -191,22 +191,22 @@ const AccountPage: React.FC = () => {
     const newData = [...formData[tabId]];
     const numValue = parseFloat(value) || 0;
     const itemId = newData[index].id;
-    
+
     newData[index][field] = numValue;
-    
+
     // Calculate new subtotal
     const cost = newData[index].cost;
     const quantity = newData[index].quantity;
     const discount = newData[index].discount;
-    
+
     const subtotal = cost * quantity * (1 - discount / 100);
     newData[index].subtotal = Math.round(subtotal * 100) / 100;
-    
+
     setFormData(prev => ({
       ...prev,
       [tabId]: newData
     }));
-    
+
     // Si el campo es quantity y se cambia a 0, desmarcar el checkbox
     if (field === 'quantity' && numValue === 0) {
       const updatedItems = {
@@ -233,9 +233,9 @@ const AccountPage: React.FC = () => {
       ...checkedItems,
       [itemId]: isChecked
     };
-    
+
     setCheckedItems(updatedItems);
-    
+
     // Guardar en localStorage
     storage.setItem('selectedItems', updatedItems);
 
@@ -250,12 +250,12 @@ const AccountPage: React.FC = () => {
   // Check if all selected items in current tab have required fields completed
   const areCurrentTabItemsComplete = () => {
     if (!hasSelectedItems) return false;
-    
+
     const currentTabItems = formData[currentTab.id];
     return currentTabItems.every(item => {
       const isChecked = checkedItems[item.id];
       if (!isChecked) return true; // Skip unchecked items
-      
+
       // Check if required fields are completed
       return item.cost > 0 && item.quantity > 0;
     });
@@ -275,23 +275,23 @@ const AccountPage: React.FC = () => {
       // Mark current tab as completed and unlock next tab
       const newCompletedTabs = new Set(completedTabs);
       newCompletedTabs.add(activeTab);
-      
+
       if (activeTab < tabsData.length - 1) {
         newCompletedTabs.add(activeTab + 1); // Unlock next tab
         setCompletedTabs(newCompletedTabs);
         setActiveTab(activeTab + 1); // Move to next tab
-        
+
         // Guardar el estado actual de los datos del formulario
         storage.setItem('formData', formData);
       } else {
         // Last tab completed, go to checklist
         setCompletedTabs(newCompletedTabs);
-        
+
         // Guardar el estado actual de los datos del formulario
         storage.setItem('formData', formData);
-        
-        navigate('/checklist-captura', { 
-          state: { 
+
+        navigate('/checklist-captura', {
+          state: {
             clientName,
             selectedItems: checkedItems,
             allData: formData
@@ -313,39 +313,39 @@ const AccountPage: React.FC = () => {
       <div className="account-header">
         <div className="account-breadcrumb-container">
           <span className="account-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/dashboard')}
             className="account-breadcrumb-link"
           >
             Menú
           </button>
           <span className="account-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/overview-main')}
             className="account-breadcrumb-link"
           >
             Overview de cuentas
           </button>
           <span className="account-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/overview')}
             className="account-breadcrumb-link"
           >
             Configuración de cuentas
           </button>
           <span className="account-breadcrumb-separator">/</span>
-          <button 
+          <button
             onClick={() => navigate('/client-dashboard', { state: { clientName } })}
             className="account-breadcrumb-link"
           >
             {clientName ? clientName.split(' - ')[0] : 'Cliente'}
           </button>
         </div>
-        
+
         <h1 className="client-name">Acuerdo de colaboración</h1>
-        
+
         <div className="header-buttons">
-          <button 
+          <button
             className="account-button"
             onClick={() => setShowLogoutDialog(true)}
           >
@@ -361,7 +361,7 @@ const AccountPage: React.FC = () => {
         isOpen={showLogoutDialog}
         onClose={() => setShowLogoutDialog(false)}
       />
-      
+
       <AccessDeniedModal
         isOpen={showAccessDeniedModal}
         onClose={() => {
@@ -377,7 +377,7 @@ const AccountPage: React.FC = () => {
           <div className="tabs-header">
             <h2 className="tabs-title">Configuración de Servicios</h2>
           </div>
-          
+
           <div className="tabs-list">
             {tabsData.map((tab, index) => (
               <button
@@ -388,12 +388,12 @@ const AccountPage: React.FC = () => {
               >
                 <div className="tab-number">
                   {tab.id === 'estrategia' ? '1' :
-                   tab.id === 'antropologicos' ? '1.1' :
-                   tab.id === 'otros-estudios' ? '1.2' :
-                   tab.id === 'acompanamiento' ? '2' :
-                   tab.id === 'gerencia' ? '3' :
-                   tab.id === 'produccion' ? '4' :
-                   tab.id === 'difusion' ? '5' : index + 1}
+                    tab.id === 'antropologicos' ? '1.1' :
+                      tab.id === 'otros-estudios' ? '1.2' :
+                        tab.id === 'acompanamiento' ? '2' :
+                          tab.id === 'gerencia' ? '3' :
+                            tab.id === 'produccion' ? '4' :
+                              tab.id === 'difusion' ? '5' : index + 1}
                 </div>
                 <div className="tab-info">
                   <div className="tab-title">{tab.title}</div>
@@ -415,9 +415,9 @@ const AccountPage: React.FC = () => {
               <div key={item.id} className={`form-item ${!checkedItems[item.id] ? 'disabled' : 'selected'}`}>
                 <div className="item-header">
                   <div className="item-checkbox">
-                    <input 
-                      type="checkbox" 
-                      className="checkbox" 
+                    <input
+                      type="checkbox"
+                      className="checkbox"
                       checked={checkedItems[item.id] || false}
                       onChange={() => handleCheckboxChange(item.id, currentTab.id, index)}
                       id={`checkbox-${item.id}`}
@@ -498,7 +498,7 @@ const AccountPage: React.FC = () => {
 
       {hasSelectedItems && (
         <div className="continue-button-container">
-          <button 
+          <button
             className={`continue-button ${!isCurrentTabComplete ? 'disabled' : ''}`}
             disabled={!isCurrentTabComplete}
             onClick={handleContinueToNextTab}

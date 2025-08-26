@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/theme-toggle.css';
+import '../../styles/theme-toggle.css';
 
 interface ThemeToggleProps {
   isDarkMode: boolean;

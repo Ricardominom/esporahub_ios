@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginButton from './LoginButton';
-import Logo from './Logo';
+import Logo from './generals/Logo';
 // import FlowEffect from './FlowEffect'; // Temporalmente deshabilitado
 import MeltingText from './MeltingText';
 import '../styles/header.css';
