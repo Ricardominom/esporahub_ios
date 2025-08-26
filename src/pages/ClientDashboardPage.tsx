@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, FileText, Handshake, Settings, Presentation, ArrowLeft } from 'lucide-react';
+import { LogOut, FileText, Handshake, Settings, Presentation } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { hasPermission } from '@/data/users';
-import Logo from '@/components/generals/Logo';
-import UserAvatar from '@/components/generals/UserAvatar';
-import ThemeToggle from '@/components/generals/ThemeToggle';
+import PageHeader from '@/components/generals/PageHeader';
 import LogoutDialog from '@/components/generals/LogoutDialog';
 import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import '../styles/overview-clean.css';
@@ -120,45 +118,17 @@ const ClientDashboardPage: React.FC = () => {
 
   return (
     <div className={`overview-clean ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      {/* Clean Header */}
-      <header className="clean-header">
-        <div className="header-content">
-          <div className="header-left">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="back-button"
-            >
-              <ArrowLeft size={20} />
-              <span>Menú</span>
-            </button>
-          </div>
-
-          <div className="header-center">
-            <Logo />
-            <div className="header-title">
-              {clientName ? (
-                <>
-                  <h1>{clientName.split(' - ')[0]}</h1>
-                  <p>{clientName.split(' - ')[1]}</p>
-                </>
-              ) : (
-                <>
-                  <h1>Dashboard del Cliente</h1>
-                  <p>Gestión de servicios y documentos</p>
-                </>
-              )}
-            </div>
-          </div>
-
-          <div className="header-right">
-            <UserAvatar showName size="md" />
-            <ThemeToggle
-              isDarkMode={isDarkMode}
-              onToggle={handleThemeToggle}
-            />
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title={clientName ? clientName.split(' - ')[0] : "Dashboard del Cliente"}
+        subtitle={clientName ? clientName.split(' - ')[1] : "Gestión de servicios y documentos"}
+        backButtonText="Menú"
+        backButtonPath="/dashboard"
+        isDarkMode={isDarkMode}
+        onThemeToggle={handleThemeToggle}
+        showUserAvatar={true}
+        userAvatarSize="md"
+        showUserName={true}
+      />
 
       {/* Main Content */}
       <main className={`clean-main ${isVisible ? 'visible' : ''}`}>

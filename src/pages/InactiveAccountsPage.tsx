@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, User, ArrowLeft } from 'lucide-react';
-import Logo from '@/components/generals/Logo';
-import UserAvatar from '@/components/generals/UserAvatar';
-import ThemeToggle from '@/components/generals/ThemeToggle';
+import { LogOut, User } from 'lucide-react';
+import PageHeader from '@/components/generals/PageHeader';
 import LogoutDialog from '@/components/generals/LogoutDialog';
 import '../styles/overview-clean.css';
 
@@ -68,36 +66,17 @@ const InactiveAccountsPage: React.FC = () => {
 
   return (
     <div className={`overview-clean ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      {/* Clean Header */}
-      <header className="clean-header">
-        <div className="header-content">
-          <div className="header-left">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="back-button"
-            >
-              <ArrowLeft size={20} />
-              <span>Menú</span>
-            </button>
-          </div>
-
-          <div className="header-center">
-            <Logo />
-            <div className="header-title">
-              <h1>Cuentas Inactivas</h1>
-              <p>Gestión de cuentas inactivas del sistema</p>
-            </div>
-          </div>
-
-          <div className="header-right">
-            <UserAvatar showName size="md" />
-            <ThemeToggle
-              isDarkMode={isDarkMode}
-              onToggle={handleThemeToggle}
-            />
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title="Cuentas Inactivas"
+        subtitle="Gestión de cuentas inactivas del sistema"
+        backButtonText="Menú"
+        backButtonPath="/dashboard"
+        isDarkMode={isDarkMode}
+        onThemeToggle={handleThemeToggle}
+        showUserAvatar={true}
+        userAvatarSize="md"
+        showUserName={true}
+      />
 
       {/* Main Content */}
       <main className={`clean-main ${isVisible ? 'visible' : ''}`}>

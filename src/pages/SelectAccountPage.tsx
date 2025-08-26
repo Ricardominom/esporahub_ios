@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, ArrowLeft } from 'lucide-react';
-import Logo from '@/components/generals/Logo';
-import UserAvatar from '@/components/generals/UserAvatar';
-import ThemeToggle from '@/components/generals/ThemeToggle';
+import { LogOut } from 'lucide-react';
+import PageHeader from '@/components/generals/PageHeader';
 import LogoutDialog from '@/components/generals/LogoutDialog';
 import '../styles/overview-clean.css';
 
@@ -72,36 +70,17 @@ const SelectAccountPage: React.FC = () => {
 
   return (
     <div className={`overview-clean ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      {/* Clean Header */}
-      <header className="clean-header">
-        <div className="header-content">
-          <div className="header-left">
-            <button
-              onClick={() => navigate('/overview')}
-              className="back-button"
-            >
-              <ArrowLeft size={20} />
-              <span>Configuración</span>
-            </button>
-          </div>
-
-          <div className="header-center">
-            <Logo />
-            <div className="header-title">
-              <h1>Seleccionar Cuenta</h1>
-              <p>Elige una cuenta para continuar</p>
-            </div>
-          </div>
-
-          <div className="header-right">
-            <UserAvatar showName size="md" />
-            <ThemeToggle
-              isDarkMode={isDarkMode}
-              onToggle={handleThemeToggle}
-            />
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title="Seleccionar Cuenta"
+        subtitle="Elige una cuenta para continuar"
+        backButtonText="Configuración"
+        backButtonPath="/overview"
+        isDarkMode={isDarkMode}
+        onThemeToggle={handleThemeToggle}
+        showUserAvatar={true}
+        userAvatarSize="md"
+        showUserName={true}
+      />
 
       {/* Main Content */}
       <main className={`clean-main ${isVisible ? 'visible' : ''}`}>
