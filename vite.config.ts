@@ -1,23 +1,22 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@/components': path.resolve(__dirname, './src/components'),
-      '@/pages': path.resolve(__dirname, './src/pages'),
-      '@/styles': path.resolve(__dirname, './src/styles'),
-      '@/hooks': path.resolve(__dirname, './src/hooks'),
-      '@/stores': path.resolve(__dirname, './src/stores'),
-      '@/services': path.resolve(__dirname, './src/services'),
-      '@/utils': path.resolve(__dirname, './src/utils'),
-      '@/types': path.resolve(__dirname, './src/types'),
-      '@/data': path.resolve(__dirname, './src/data'),
-      '@/config': path.resolve(__dirname, './src/config'),
+      '@': '/src',
+      '@/components': '/src/components',
+      '@/pages': '/src/pages',
+      '@/styles': '/src/styles',
+      '@/hooks': '/src/hooks',
+      '@/stores': '/src/stores',
+      '@/services': '/src/services',
+      '@/utils': '/src/utils',
+      '@/types': '/src/types',
+      '@/data': '/src/data',
+      '@/config': '/src/config',
     },
   },
   optimizeDeps: {
