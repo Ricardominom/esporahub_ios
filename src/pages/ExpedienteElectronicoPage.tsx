@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, ChevronLeft, ChevronRight, Check, FileText, User, TrendingUp, ShoppingCart, Award } from 'lucide-react';
-import { useAuthStore } from '../stores/authStore';
-import { hasPermission } from '../data/users';
-import Logo from '../components/generals/Logo';
-import LogoutDialog from '../components/generals/LogoutDialog';
-import AccessDeniedModal from '../components/generals/AccessDeniedModal';
+import { useAuthStore } from '@/stores/authStore';
+import { hasPermission } from '@/data/users';
+import Logo from '@/components/generals/Logo';
+import LogoutDialog from '@/components/generals/LogoutDialog';
+import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import '../styles/expediente-electronico.css';
 
 interface FormData {

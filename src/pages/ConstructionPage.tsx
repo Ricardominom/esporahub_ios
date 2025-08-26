@@ -1,34 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Construction, ArrowLeft, LogOut } from 'lucide-react';
-import { useAuthStore } from '../stores/authStore';
-import Logo from '../components/generals/Logo';
-import LogoutDialog from '../components/generals/LogoutDialog';
+import { useAuthStore } from '@/stores/authStore';
+import Logo from '@/components/generals/Logo';
+import LogoutDialog from '@/components/generals/LogoutDialog';
 import '../styles/construction.css';
 
 const ConstructionPage: React.FC = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
   const { logout } = useAuthStore();
-  
+
   // Listen for theme changes
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -37,9 +37,9 @@ const ConstructionPage: React.FC = () => {
     <div className="construction-page">
       <div className="construction-overlay" />
       <div className="construction-overlay" style={{ transform: 'rotate(180deg)' }} />
-      
+
       <div className="construction-header">
-        <button 
+        <button
           onClick={() => navigate('/dashboard')}
           className="back-link"
         >
@@ -51,7 +51,7 @@ const ConstructionPage: React.FC = () => {
         </div>
       </div>
 
-      <button 
+      <button
         className="logout-button"
         onClick={() => setShowLogoutDialog(true)}
         style={{

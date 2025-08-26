@@ -119,7 +119,7 @@ const CreateAccountModal: React.FC<CreateAccountModalProps> = ({ isOpen, onClose
 
           <div className="social-media-section">
             <h3>Redes Sociales</h3>
-            
+
             <div className="form-group">
               <label htmlFor="twitter">
                 <Twitter size={16} className="icon" />

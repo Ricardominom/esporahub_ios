@@ -55,7 +55,7 @@ const SelectAccountModal: React.FC<SelectAccountModalProps> = ({ isOpen, onClose
               className="form-input"
               required
               defaultValue=""
-              style={{ 
+              style={{
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'right 0.75rem center',
                 backgroundSize: '16px'

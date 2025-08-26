@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, Calendar, CheckSquare, Clock, AlertCircle, User, CheckCircle, FileText, ArrowUp, Layers, Briefcase, Activity, Users, UserCheck, ArrowLeft } from 'lucide-react';
-import { useAuthStore } from '../stores/authStore';
-import { hasPermission, getUserById } from '../data/users';
-import LogoutDialog from '../components/generals/LogoutDialog';
-import Logo from '../components/generals/Logo';
-import UserAvatar from '../components/generals/UserAvatar';
-import ThemeToggle from '../components/generals/ThemeToggle';
-import { storage } from '../utils/storage';
-import InputModal from '../components/generals/InputModal';
+import { useAuthStore } from '@/stores/authStore';
+import { hasPermission, getUserById } from '@/data/users';
+import LogoutDialog from '@/components/generals/LogoutDialog';
+import Logo from '@/components/generals/Logo';
+import UserAvatar from '@/components/generals/UserAvatar';
+import ThemeToggle from '@/components/generals/ThemeToggle';
+import { storage } from '@/utils/storage';
+import InputModal from '@/components/generals/InputModal';
 import '../styles/overview-clean.css';
 
 interface TaskAssignment {

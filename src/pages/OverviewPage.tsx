@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, UserPlus, Users, ArrowLeft } from 'lucide-react';
-import { useAuthStore } from '../stores/authStore';
-import { hasPermission } from '../data/users';
-import Logo from '../components/generals/Logo';
-import UserAvatar from '../components/generals/UserAvatar';
-import ThemeToggle from '../components/generals/ThemeToggle';
-import CreateAccountModal from '../components/CreateAccountModal';
-import SelectAccountModal from '../components/SelectAccountModal';
-import LogoutDialog from '../components/generals/LogoutDialog';
-import AccessDeniedModal from '../components/generals/AccessDeniedModal';
+import { useAuthStore } from '@/stores/authStore';
+import { hasPermission } from '@/data/users';
+import Logo from '@/components/generals/Logo';
+import UserAvatar from '@/components/generals/UserAvatar';
+import ThemeToggle from '@/components/generals/ThemeToggle';
+import CreateAccountModal from '@/components/CreateAccountModal';
+import SelectAccountModal from '@/components/SelectAccountModal';
+import LogoutDialog from '@/components/generals/LogoutDialog';
+import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import '../styles/overview-clean.css';
 
 const OverviewPage: React.FC = () => {

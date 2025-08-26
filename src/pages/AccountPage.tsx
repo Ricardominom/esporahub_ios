@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
-import Logo from '../components/generals/Logo';
-import LogoutDialog from '../components/generals/LogoutDialog';
-import AccessDeniedModal from '../components/generals/AccessDeniedModal';
-import { useAuthStore } from '../stores/authStore';
-import { hasPermission } from '../data/users';
+import Logo from '@/components/generals/Logo';
+import LogoutDialog from '@/components/generals/LogoutDialog';
+import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
+import { useAuthStore } from '@/stores/authStore';
+import { hasPermission } from '@/data/users';
 import '../styles/account.css';
-import { storage } from '../utils/storage';
+import { storage } from '@/utils/storage';
 
 interface FormData {
   id: string;

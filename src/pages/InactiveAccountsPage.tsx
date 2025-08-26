@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, User, ArrowLeft } from 'lucide-react';
-import { useAuthStore } from '../stores/authStore';
-import Logo from '../components/generals/Logo';
-import UserAvatar from '../components/generals/UserAvatar';
-import ThemeToggle from '../components/generals/ThemeToggle';
-import LogoutDialog from '../components/generals/LogoutDialog';
+import { useAuthStore } from '@/stores/authStore';
+import Logo from '@/components/generals/Logo';
+import UserAvatar from '@/components/generals/UserAvatar';
+import ThemeToggle from '@/components/generals/ThemeToggle';
+import LogoutDialog from '@/components/generals/LogoutDialog';
 import '../styles/overview-clean.css';
 
 const InactiveAccountsPage: React.FC = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
   const { logout } = useAuthStore();
-  
+
   const handleThemeToggle = () => {
     if (isDarkMode) {
       document.body.classList.remove('dark-theme');
@@ -33,15 +33,15 @@ const InactiveAccountsPage: React.FC = () => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -52,8 +52,8 @@ const InactiveAccountsPage: React.FC = () => {
     { id: 5, name: 'Roberto Silva', position: 'Presidente Municipal', color: 'text-yellow-500' }
   ];
 
-  const [accountStatuses, setAccountStatuses] = useState<{[key: number]: boolean}>(() => {
-    const initialStatuses: {[key: number]: boolean} = {};
+  const [accountStatuses, setAccountStatuses] = useState<{ [key: number]: boolean }>(() => {
+    const initialStatuses: { [key: number]: boolean } = {};
     inactiveAccounts.forEach(account => {
       initialStatuses[account.id] = false; // Todas empiezan como inactivas
     });
@@ -69,9 +69,9 @@ const InactiveAccountsPage: React.FC = () => {
   };
 
   const handleAccountSelect = (accountName: string, position: string) => {
-    navigate('/client-dashboard', { 
-      state: { 
-        clientName: `${accountName} - ${position}` 
+    navigate('/client-dashboard', {
+      state: {
+        clientName: `${accountName} - ${position}`
       }
     });
   };
@@ -82,7 +82,7 @@ const InactiveAccountsPage: React.FC = () => {
       <header className="clean-header">
         <div className="header-content">
           <div className="header-left">
-            <button 
+            <button
               onClick={() => navigate('/dashboard')}
               className="back-button"
             >
@@ -90,7 +90,7 @@ const InactiveAccountsPage: React.FC = () => {
               <span>Menú</span>
             </button>
           </div>
-          
+
           <div className="header-center">
             <Logo />
             <div className="header-title">
@@ -98,12 +98,12 @@ const InactiveAccountsPage: React.FC = () => {
               <p>Gestión de cuentas inactivas del sistema</p>
             </div>
           </div>
-          
+
           <div className="header-right">
             <UserAvatar showName size="md" />
-            <ThemeToggle 
-              isDarkMode={isDarkMode} 
-              onToggle={handleThemeToggle} 
+            <ThemeToggle
+              isDarkMode={isDarkMode}
+              onToggle={handleThemeToggle}
             />
           </div>
         </div>
@@ -114,18 +114,18 @@ const InactiveAccountsPage: React.FC = () => {
         <div className="content-container">
           {/* Accounts Grid */}
           <section className="actions-section">
-            <div className="actions-grid" style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(4, 1fr)', 
+            <div className="actions-grid" style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
               gap: '2rem',
               maxWidth: '1200px',
               margin: '0 auto'
             }}>
               {inactiveAccounts.map((account, index) => (
-                <div 
-                  key={account.id} 
+                <div
+                  key={account.id}
                   className="icloud-account-card"
-                  style={{ 
+                  style={{
                     animationDelay: `${index * 0.1}s`,
                     position: 'relative',
                     background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 25%, #B91C1C 50%, #991B1B 75%, #7F1D1D 100%)',
@@ -140,12 +140,12 @@ const InactiveAccountsPage: React.FC = () => {
                       <div className="avatar-body"></div>
                     </div>
                   </div>
-                  
+
                   {/* Account info */}
                   <div className="account-info">
                     <h3 className="account-name">{account.name}</h3>
                   </div>
-                  
+
                   {/* Position badge */}
                   <div className="position-badge">
                     {account.position}
@@ -167,7 +167,7 @@ const InactiveAccountsPage: React.FC = () => {
           textAlign: 'center',
           opacity: 0.8
         }}>
-          <User size={64} style={{ 
+          <User size={64} style={{
             marginBottom: '1rem',
             color: isDarkMode ? 'rgba(239, 68, 68, 0.6)' : 'rgba(239, 68, 68, 0.6)'
           }} />
@@ -195,7 +195,7 @@ const InactiveAccountsPage: React.FC = () => {
             <span className="footer-text">© 2025 Espora Hub</span>
           </div>
           <div className="footer-right">
-            <button 
+            <button
               className="logout-btn"
               onClick={() => setShowLogoutDialog(true)}
             >

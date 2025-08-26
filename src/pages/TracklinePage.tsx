@@ -7,24 +7,24 @@ import ThemeToggle from '@/components/generals/ThemeToggle';
 const TracklinePage: React.FC = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
-  
+
   // Listen for theme changes
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setIsDarkMode(document.body.classList.contains('dark-theme'));
     });
-    
+
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -42,7 +42,7 @@ const TracklinePage: React.FC = () => {
   return (
     <div className={`trackline-page ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
       <div className="trackline-header">
-        <button 
+        <button
           onClick={() => navigate('/dashboard')}
           className="back-link"
         >
@@ -54,9 +54,9 @@ const TracklinePage: React.FC = () => {
         </h1>
         <div className="header-right">
           <Logo />
-          <ThemeToggle 
-            isDarkMode={isDarkMode} 
-            onToggle={handleThemeToggle} 
+          <ThemeToggle
+            isDarkMode={isDarkMode}
+            onToggle={handleThemeToggle}
           />
         </div>
       </div>

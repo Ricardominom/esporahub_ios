@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, Upload, FileText, Download, Trash2, } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
-import { hasPermission } from '../data/users';
+import { hasPermission } from '@/data/users';
 import Logo from '@/components/generals/Logo';
 import LogoutDialog from '@/components/generals/LogoutDialog';
 import AccessDeniedModal from '@/components/generals/AccessDeniedModal';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from 'lucide-react';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '@/stores/authStore';
 
 interface UserAvatarProps {
   size?: 'sm' | 'md' | 'lg';
