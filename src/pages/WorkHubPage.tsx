@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Calendar, CheckSquare, Clock, AlertCircle, User, CheckCircle, FileText, ArrowUp, Layers, Briefcase, Activity, Users, UserCheck, ArrowLeft } from 'lucide-react';
+import { LogOut, Calendar, Clock, AlertCircle, CheckCircle, FileText, ArrowUp, Briefcase, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
-import { hasPermission, getUserById } from '@/data/users';
 import LogoutDialog from '@/components/generals/LogoutDialog';
 import Logo from '@/components/generals/Logo';
 import UserAvatar from '@/components/generals/UserAvatar';
@@ -30,6 +29,11 @@ interface ProjectItem {
   completed?: boolean;
 }
 
+interface FormDataItem {
+  id: string;
+  concept: string;
+}
+
 const WorkHubPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -50,7 +54,7 @@ const WorkHubPage: React.FC = () => {
     fieldType: 'text' as 'text' | 'number' | 'select',
     initialValue: '',
     selectOptions: [] as { value: string; label: string }[],
-    onSave: (value: string) => { }
+    onSave: () => { }
   });
   const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
@@ -81,6 +85,37 @@ const WorkHubPage: React.FC = () => {
     setIsDarkMode(!isDarkMode);
   };
 
+  // Función para cargar los ítems del proyecto desde localStorage
+  const loadProjectItems = React.useCallback(() => {
+    try {
+      // Cargar los ítems seleccionados y los datos del formulario
+      const selectedItems = storage.getItem<{ [key: string]: boolean }>('selectedItems') || {};
+      const formData = storage.getItem<{ [key: string]: FormDataItem[] }>('formData');
+
+      if (formData) {
+        const items: ProjectItem[] = [];
+
+        // Procesar cada sección
+        Object.entries(formData).forEach(([sectionId, data]: [string, FormDataItem[]]) => {
+          data.forEach((item) => {
+            if (selectedItems[item.id]) {
+              items.push({
+                id: item.id,
+                concept: item.concept,
+                section: getSectionName(sectionId),
+                sectionId: sectionId
+              });
+            }
+          });
+        });
+
+        setProjectItems(items);
+      }
+    } catch (error) {
+      console.error('Error loading project items:', error);
+    }
+  }, []);
+
   useEffect(() => {
     setIsVisible(true);
 
@@ -109,38 +144,7 @@ const WorkHubPage: React.FC = () => {
 
     // Limpiar el intervalo cuando el componente se desmonte
     return () => clearInterval(intervalId);
-  }, [user]);
-
-  // Función para cargar los ítems del proyecto desde localStorage
-  const loadProjectItems = () => {
-    try {
-      // Cargar los ítems seleccionados y los datos del formulario
-      const selectedItems = storage.getItem<{ [key: string]: boolean }>('selectedItems') || {};
-      const formData = storage.getItem<{ [key: string]: any[] }>('formData');
-
-      if (formData) {
-        const items: ProjectItem[] = [];
-
-        // Procesar cada sección
-        Object.entries(formData).forEach(([sectionId, data]: [string, any[]]) => {
-          data.forEach((item) => {
-            if (selectedItems[item.id]) {
-              items.push({
-                id: item.id,
-                concept: item.concept,
-                section: getSectionName(sectionId),
-                sectionId: sectionId
-              });
-            }
-          });
-        });
-
-        setProjectItems(items);
-      }
-    } catch (error) {
-      console.error('Error loading project items:', error);
-    }
-  };
+  }, [user, loadProjectItems]);
 
   // Función para obtener el nombre de la sección
   const getSectionName = (sectionId: string): string => {
@@ -187,10 +191,11 @@ const WorkHubPage: React.FC = () => {
           return dueDate < today;
         case 'today':
           return dueDate.getTime() === today.getTime();
-        case 'this-week':
+        case 'this-week': {
           const thisWeekEnd = new Date(today);
           thisWeekEnd.setDate(today.getDate() + (6 - today.getDay()));
           return dueDate > today && dueDate <= thisWeekEnd;
+        }
         case 'next-week':
           return dueDate >= nextWeekStart && dueDate <= nextWeekEnd;
         case 'later':
@@ -235,10 +240,11 @@ const WorkHubPage: React.FC = () => {
           return dueDate < today;
         case 'today':
           return dueDate.getTime() === today.getTime();
-        case 'this-week':
+        case 'this-week': {
           const thisWeekEnd = new Date(today);
           thisWeekEnd.setDate(today.getDate() + (6 - today.getDay()));
           return dueDate > today && dueDate <= thisWeekEnd;
+        }
         case 'next-week':
           return dueDate >= nextWeekStart && dueDate <= nextWeekEnd;
         case 'later':

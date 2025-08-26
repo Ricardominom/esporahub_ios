@@ -16,16 +16,14 @@ const OverviewPage: React.FC = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [shouldShowElements, setShouldShowElements] = useState(true);
   const [isSelectModalOpen, setIsSelectModalOpen] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const [clientName, setClientName] = useState('');
   const [showAccessDeniedModal, setShowAccessDeniedModal] = useState(false);
   const [deniedFeature, setDeniedFeature] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(() =>
     document.body.classList.contains('dark-theme')
   );
-  const { logout, user } = useAuthStore();
+  const { user } = useAuthStore();
 
   const handleThemeToggle = () => {
     if (isDarkMode) {
@@ -55,17 +53,6 @@ const OverviewPage: React.FC = () => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
-  useEffect(() => {
-    if (isCreateModalOpen || isSelectModalOpen) {
-      // Mantener elementos visibles durante la apertura del modal
-      setShouldShowElements(true);
-    } else {
-      // Pequeño delay solo al cerrar
-      const timer = setTimeout(() => setShouldShowElements(true), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isCreateModalOpen, isSelectModalOpen]);
 
   const handleCreateAccountClick = () => {
     if (user && hasPermission(user, 'create_accounts')) {
@@ -214,7 +201,7 @@ const OverviewPage: React.FC = () => {
       <CreateAccountModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        onCreateAccount={setClientName}
+        onCreateAccount={() => { }}
       />
 
       <SelectAccountModal
