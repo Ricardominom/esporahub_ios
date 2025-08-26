@@ -135,6 +135,29 @@
     font-size: 15px;
     margin: 0;
     opacity: 0.6;
+    transition: color 0.3s ease;
+}
+
+/* Dark theme subtitle */
+.overview-clean.dark-theme .header-title p,
+.account-page.dark-theme .header-title p,
+.expediente-page.dark-theme .header-title p {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Light theme subtitle */
+.overview-clean.light-theme .header-title p,
+.account-page.light-theme .header-title p,
+.expediente-page.light-theme .header-title p {
+    color: #1a202c !important;
+    opacity: 1 !important;
+}
+
+/* Extra specificity for expediente page subtitle in light mode */
+.expediente-page.light-theme .clean-header .header-title p {
+    color: #2d3748 !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
 }
 
 .theme-toggle-btn {
