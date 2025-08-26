@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, UserPlus, Users } from 'lucide-react';
+import { UserPlus, Users } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { hasPermission } from '@/data/users';
 import PageHeader from '@/components/generals/PageHeader';
+import PageFooter from '@/components/generals/PageFooter';
 import CreateAccountModal from '@/components/CreateAccountModal';
 import SelectAccountModal from '@/components/SelectAccountModal';
-import LogoutDialog from '@/components/generals/LogoutDialog';
 import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import '../styles/overview-clean.css';
 
@@ -154,27 +154,10 @@ const OverviewPage: React.FC = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="clean-footer">
-        <div className="footer-content">
-          <div className="footer-left">
-            <span className="footer-text">© 2025 Espora Hub</span>
-          </div>
-          <div className="footer-right">
-            <button
-              className="logout-btn"
-              onClick={() => setShowLogoutDialog(true)}
-            >
-              <LogOut size={16} />
-              <span>Cerrar sesión</span>
-            </button>
-          </div>
-        </div>
-      </footer>
-
-      <LogoutDialog
-        isOpen={showLogoutDialog}
-        onClose={() => setShowLogoutDialog(false)}
+      <PageFooter
+        showLogoutDialog={showLogoutDialog}
+        onLogoutClick={() => setShowLogoutDialog(true)}
+        onLogoutDialogClose={() => setShowLogoutDialog(false)}
       />
 
       <CreateAccountModal

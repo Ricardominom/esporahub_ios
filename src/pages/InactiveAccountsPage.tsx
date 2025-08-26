@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import PageHeader from '@/components/generals/PageHeader';
-import LogoutDialog from '@/components/generals/LogoutDialog';
+import PageFooter from '@/components/generals/PageFooter';
 import '../styles/overview-clean.css';
 
 const InactiveAccountsPage: React.FC = () => {
@@ -157,27 +157,10 @@ const InactiveAccountsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="clean-footer">
-        <div className="footer-content">
-          <div className="footer-left">
-            <span className="footer-text">© 2025 Espora Hub</span>
-          </div>
-          <div className="footer-right">
-            <button
-              className="logout-btn"
-              onClick={() => setShowLogoutDialog(true)}
-            >
-              <LogOut size={16} />
-              <span>Cerrar sesión</span>
-            </button>
-          </div>
-        </div>
-      </footer>
-
-      <LogoutDialog
-        isOpen={showLogoutDialog}
-        onClose={() => setShowLogoutDialog(false)}
+      <PageFooter
+        showLogoutDialog={showLogoutDialog}
+        onLogoutClick={() => setShowLogoutDialog(true)}
+        onLogoutDialogClose={() => setShowLogoutDialog(false)}
       />
     </div>
   );
