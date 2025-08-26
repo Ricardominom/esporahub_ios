@@ -1,6 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useChecklistLogic } from '@/components/ChecklistCaptura/useChecklistLogic';
-import ChecklistHeader from '@/components/ChecklistCaptura/ChecklistHeader';
+import PageHeader from '@/components/generals/PageHeader';
 import ChecklistTableContainer from '@/components/ChecklistCaptura/ChecklistTableContainer';
 import LogoutButton from '@/components/ChecklistCaptura/LogoutButton';
 import DeleteConfirmationModal from '@/components/generals/DeleteConfirmationModal';
@@ -12,6 +13,8 @@ import '@/styles/checklist-captura.css';
 import '@/styles/input-modal.css';
 
 const ChecklistCapturaPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const {
     // State
     isVisible,
@@ -27,8 +30,6 @@ const ChecklistCapturaPage: React.FC = () => {
     currentUser,
     groupedItems,
     orderedSections,
-    completedCount,
-    totalCount,
 
     // Setters
     setItemToDelete,
@@ -47,8 +48,21 @@ const ChecklistCapturaPage: React.FC = () => {
     hasPermission
   } = useChecklistLogic();
 
-  // Get theme from body class
-  const isDarkMode = document.body.classList.contains('dark-theme');
+  // Get theme from body class and manage state
+  const [isDarkMode, setIsDarkMode] = React.useState(() =>
+    document.body.classList.contains('dark-theme')
+  );
+
+  const handleThemeToggle = () => {
+    if (isDarkMode) {
+      document.body.classList.remove('dark-theme');
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+      document.body.classList.add('dark-theme');
+    }
+    setIsDarkMode(!isDarkMode);
+  };
 
   // Wrapper function for hasPermission that handles null users
   const hasPermissionWrapper = (user: User | null, permission: string) => {
@@ -57,10 +71,24 @@ const ChecklistCapturaPage: React.FC = () => {
 
   return (
     <div className={`checklist-captura-page ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      <ChecklistHeader
-        clientName={clientName}
-        completedCount={completedCount}
-        totalCount={totalCount}
+      <PageHeader
+        title="Checklist de captura"
+        subtitle={clientName}
+        showBackButton={false}
+        showTitle={true}
+        showSubtitle={true}
+        showLogo={true}
+        breadcrumbs={[
+          { label: 'Menú', onClick: () => navigate('/dashboard') },
+          { label: 'Overview', onClick: () => navigate('/overview-main') },
+          { label: 'Configuración', onClick: () => navigate('/overview') },
+          { label: 'Seleccionar', onClick: () => navigate('/select-account') },
+          { label: clientName, onClick: () => navigate('/client-dashboard', { state: { clientName } }) }
+        ]}
+        isDarkMode={isDarkMode}
+        onThemeToggle={handleThemeToggle}
+        showUserAvatar={true}
+        showUserName={true}
       />
 
       <LogoutButton
