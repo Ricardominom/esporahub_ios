@@ -344,8 +344,8 @@ const WorkHubPage: React.FC = () => {
           {/* Tab Navigation - Apple Style */}
           <section className="actions-section">
             <div className="section-header">
-              <h2>Centro de Trabajo</h2>
-              <p>Gestiona tus tareas y proyectos</p>
+              <h2>WorkHub</h2>
+              <p>Selecciona una opción para continuar</p>
             </div>
 
             {/* Tab Selector */}
