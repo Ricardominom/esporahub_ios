@@ -314,11 +314,33 @@ const WorkHubPage: React.FC = () => {
             <button
               onClick={() => navigate('/dashboard')}
               className="back-button"
-            >
+            <div className="filter-cards" style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+              gap: '1rem',
+              marginBottom: '1.5rem',
+              maxWidth: '100%'
+            }}>
               <ArrowLeft size={20} />
               <span>Menú</span>
             </button>
           </div>
+                  style={{
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    textAlign: 'center',
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    minHeight: '80px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}
 
           <div className="header-center">
             <Logo />
