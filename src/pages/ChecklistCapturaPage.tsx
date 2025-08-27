@@ -12,6 +12,12 @@ import { storage } from '@/utils/storage';
 import '@/styles/checklist-captura.css';
 import '@/styles/input-modal.css';
 
+// Helper function to clean client name
+const getCleanClientName = (name: string): string => {
+  if (!name) return '';
+  return name.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+};
+
 const ChecklistCapturaPage: React.FC = () => {
   const navigate = useNavigate();
 
@@ -47,6 +53,9 @@ const ChecklistCapturaPage: React.FC = () => {
     handleDueDateChange,
     hasPermission
   } = useChecklistLogic();
+
+  // Clean client name for breadcrumbs
+  const cleanClientName = getCleanClientName(clientName);
 
   // Get theme from body class and manage state
   const [isDarkMode, setIsDarkMode] = React.useState(() =>
