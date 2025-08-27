@@ -158,8 +158,7 @@ const PresentacionInicialPage: React.FC = () => {
           { label: 'Overview', onClick: () => navigate('/overview-main') },
           { label: 'Configuración', onClick: () => navigate('/overview') },
           { label: 'Seleccionar', onClick: () => navigate('/select-account') },
-          { label: clientName ? clientName.split(' - ')[0] : 'Cliente', onClick: () => navigate('/client-dashboard', { state: { clientName } }) },
-          { label: 'presentacion-inicial', onClick: () => {} }
+          { label: clientName ? clientName.split(' - ')[0] : 'Cliente', onClick: () => navigate('/client-dashboard', { state: { clientName } }) }
         ]}
         isDarkMode={isDarkMode}
         onThemeToggle={handleThemeToggle}
