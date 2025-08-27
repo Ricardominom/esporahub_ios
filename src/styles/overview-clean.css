@@ -550,7 +550,7 @@
 
 .actions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(3, 280px);
   gap: 2rem;
   justify-content: center;
   justify-items: center;
@@ -570,8 +570,9 @@
   border: 1px solid transparent;
   position: relative;
   overflow: hidden;
-  width: 250px;
-  min-height: 180px;
+  width: 280px;
+  min-height: 200px;
+  max-height: 200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -625,6 +626,7 @@
   margin-bottom: 1rem;
   flex-direction: column;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .card-icon {
@@ -779,6 +781,7 @@
   margin: 0 0 0.5rem 0;
   letter-spacing: -0.26px;
   line-height: 1.2;
+  text-align: center;
 }
 
 .card-content p {
@@ -787,6 +790,10 @@
   opacity: 0.8;
   line-height: 1.4;
   flex: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-footer {
@@ -954,12 +961,14 @@
   }
 
   .actions-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
   }
 
   .action-card {
     padding: 1.5rem;
+    width: 100%;
+    max-width: 280px;
   }
 }
 
@@ -988,8 +997,16 @@
     text-align: center;
   }
 
+  .actions-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
   .action-card {
     padding: 1rem;
+    width: 100%;
+    max-width: none;
+    min-height: 160px;
   }
 
   .card-content h3 {
