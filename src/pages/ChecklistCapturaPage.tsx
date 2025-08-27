@@ -83,7 +83,7 @@ const ChecklistCapturaPage: React.FC = () => {
           { label: 'Overview', onClick: () => navigate('/overview-main') },
           { label: 'Configuración', onClick: () => navigate('/overview') },
           { label: 'Seleccionar', onClick: () => navigate('/select-account') },
-          { label: clientName, onClick: () => navigate('/client-dashboard', { state: { clientName } }) }
+          { label: cleanClientName, onClick: () => navigate('/client-dashboard', { state: { clientName } }) }
         ]}
         isDarkMode={isDarkMode}
         onThemeToggle={handleThemeToggle}
