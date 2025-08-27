@@ -268,4 +268,4 @@ const WorkHubPage: React.FC = () => {
   ];
 
   const handleCategoryClick = (categoryId: string) => {
-    setSelectedCategory(category
+    setSelectedCategory(categoryId);
