@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight, Check, FileText, User, TrendingUp, ShoppingC
 import PageHeader from '@/components/generals/PageHeader';
 import { useAuthStore } from '@/stores/authStore';
 import { hasPermission } from '@/data/users';
-import PageFooter from '@/components/generals/PageFooter';
 import AccessDeniedModal from '@/components/generals/AccessDeniedModal';
 import '../styles/expediente-electronico.css';
 
@@ -1669,8 +1668,6 @@ const ExpedienteElectronicoPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-    
 
       <AccessDeniedModal
         isOpen={showAccessDeniedModal}
