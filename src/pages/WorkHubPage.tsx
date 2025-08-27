@@ -44,7 +44,6 @@ const WorkHubPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [taskAssignments, setTaskAssignments] = useState<TaskAssignment[]>([]);
   const [fieldValues, setFieldValues] = useState<{ [key: string]: string }>(() => {
-    // Intentar cargar los valores de los campos desde localStorage
     const savedValues = storage.getItem<{ [key: string]: string }>('fieldValues');
     return savedValues || {};
   });
@@ -88,14 +87,12 @@ const WorkHubPage: React.FC = () => {
   // Función para cargar los ítems del proyecto desde localStorage
   const loadProjectItems = React.useCallback(() => {
     try {
-      // Cargar los ítems seleccionados y los datos del formulario
       const selectedItems = storage.getItem<{ [key: string]: boolean }>('selectedItems') || {};
       const formData = storage.getItem<{ [key: string]: FormDataItem[] }>('formData');
 
       if (formData) {
         const items: ProjectItem[] = [];
 
-        // Procesar cada sección
         Object.entries(formData).forEach(([sectionId, data]: [string, FormDataItem[]]) => {
           data.forEach((item) => {
             if (selectedItems[item.id]) {
@@ -119,13 +116,10 @@ const WorkHubPage: React.FC = () => {
   useEffect(() => {
     setIsVisible(true);
 
-    // Función para cargar las tareas
     const loadTasks = () => {
       try {
-        // Cargar las asignaciones de tareas desde localStorage 
         const savedAssignments = storage.getItem<TaskAssignment[]>('taskAssignments') || [];
 
-        // Filtrar solo las tareas asignadas al usuario actual
         if (user) {
           const userTasks = savedAssignments.filter(task => task.userId === user.id);
           setTaskAssignments(userTasks);
@@ -135,14 +129,11 @@ const WorkHubPage: React.FC = () => {
       }
     };
 
-    // Cargar tareas inicialmente
     loadTasks();
     loadProjectItems();
 
-    // Configurar un intervalo para verificar periódicamente si hay nuevas tareas
     const intervalId = setInterval(loadTasks, 3000);
 
-    // Limpiar el intervalo cuando el componente se desmonte
     return () => clearInterval(intervalId);
   }, [user, loadProjectItems]);
 
@@ -178,7 +169,6 @@ const WorkHubPage: React.FC = () => {
     nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
 
     return taskAssignments.filter(task => {
-      // Si la categoría es "all", mostrar todas las tareas
       if (selectedCategory === 'all') return true;
 
       if (!task.dueDate) return selectedCategory === 'no-date';
@@ -214,7 +204,6 @@ const WorkHubPage: React.FC = () => {
   const getTaskCountForCategory = (categoryId: string) => {
     if (!taskAssignments.length) return 0;
 
-    // Si la categoría es "all", mostrar el total de tareas
     if (categoryId === 'all') return taskAssignments.length;
 
     const today = new Date();
@@ -269,11 +258,378 @@ const WorkHubPage: React.FC = () => {
 
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategory(categoryId);
-  }
+  };
 
   return (
-    <div className={`overview-container ${isVisible ? 'visible' : ''}`}>
-      {/* Component JSX content will be here */}
+    <div className={`overview-clean ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
+      {/* Header */}
+      <header className="clean-header">
+        <div className="header-content">
+          <div className="header-left">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="back-button"
+            >
+              <ArrowLeft size={20} />
+              <span>Menú</span>
+            </button>
+          </div>
+
+          <div className="header-center">
+            <Logo />
+            <div className="header-title">
+              <h1>WorkHub</h1>
+              <p>Centro de colaboración y gestión de tareas</p>
+            </div>
+          </div>
+
+          <div className="header-right">
+            <UserAvatar showName size="md" />
+            <ThemeToggle
+              isDarkMode={isDarkMode}
+              onToggle={handleThemeToggle}
+            />
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className={`clean-main ${isVisible ? 'visible' : ''}`}>
+        <div className="content-container">
+          {/* Tab Navigation */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '2rem',
+            gap: '1rem'
+          }}>
+            <button
+              onClick={() => setActiveTab('tareas')}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '12px',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '1rem',
+                fontWeight: '600',
+                transition: 'all 0.3s ease',
+                background: activeTab === 'tareas' 
+                  ? (isDarkMode ? 'rgba(0, 122, 255, 0.8)' : '#007AFF')
+                  : (isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'),
+                color: activeTab === 'tareas' 
+                  ? 'white' 
+                  : (isDarkMode ? 'rgba(255, 255, 255, 0.8)' : '#4a5568')
+              }}
+            >
+              <Briefcase size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+              Mis Tareas ({taskAssignments.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('proyecto')}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '12px',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '1rem',
+                fontWeight: '600',
+                transition: 'all 0.3s ease',
+                background: activeTab === 'proyecto' 
+                  ? (isDarkMode ? 'rgba(0, 122, 255, 0.8)' : '#007AFF')
+                  : (isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'),
+                color: activeTab === 'proyecto' 
+                  ? 'white' 
+                  : (isDarkMode ? 'rgba(255, 255, 255, 0.8)' : '#4a5568')
+              }}
+            >
+              <FileText size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
+              Vista de Proyecto ({projectItems.length})
+            </button>
+          </div>
+
+          {/* Content based on active tab */}
+          {activeTab === 'tareas' && (
+            <div>
+              {/* Filter Cards */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                gap: '1rem',
+                marginBottom: '2rem',
+                maxWidth: '1200px',
+                margin: '0 auto 2rem auto'
+              }}>
+                {timeCategories.map((category) => (
+                  <div
+                    key={category.id}
+                    onClick={() => handleCategoryClick(category.id)}
+                    style={{
+                      padding: '1rem',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      textAlign: 'center',
+                      border: '1px solid',
+                      background: selectedCategory === category.id
+                        ? (isDarkMode ? 'rgba(0, 122, 255, 0.2)' : 'rgba(0, 122, 255, 0.1)')
+                        : (isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.8)'),
+                      borderColor: selectedCategory === category.id
+                        ? (isDarkMode ? 'rgba(0, 122, 255, 0.4)' : 'rgba(0, 122, 255, 0.3)')
+                        : (isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'),
+                      color: isDarkMode ? 'white' : '#1a202c'
+                    }}
+                  >
+                    <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'center' }}>
+                      {category.icon}
+                    </div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.25rem' }}>
+                      {category.label}
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.8rem', 
+                      opacity: 0.7,
+                      background: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '8px',
+                      display: 'inline-block'
+                    }}>
+                      {getTaskCountForCategory(category.id)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Tasks List */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                gap: '1rem',
+                maxWidth: '1200px',
+                margin: '0 auto'
+              }}>
+                {filteredTasks.map((task) => (
+                  <div
+                    key={task.itemId}
+                    style={{
+                      padding: '1.5rem',
+                      borderRadius: '12px',
+                      border: '1px solid',
+                      background: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.9)',
+                      borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
+                      <button
+                        onClick={() => {
+                          // Toggle completion logic here
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '0.25rem',
+                          borderRadius: '50%',
+                          color: task.completed ? '#22c55e' : (isDarkMode ? 'rgba(255, 255, 255, 0.6)' : '#6b7280')
+                        }}
+                      >
+                        {task.completed ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
+                      </button>
+                      <div style={{ flex: 1 }}>
+                        <h3 style={{
+                          fontSize: '1rem',
+                          fontWeight: '600',
+                          margin: '0 0 0.5rem 0',
+                          color: isDarkMode ? 'white' : '#1a202c'
+                        }}>
+                          {task.concept}
+                        </h3>
+                        <p style={{
+                          fontSize: '0.8rem',
+                          margin: '0 0 0.5rem 0',
+                          opacity: 0.7,
+                          color: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : '#6b7280'
+                        }}>
+                          {task.section}
+                        </p>
+                        {task.dueDate && (
+                          <p style={{
+                            fontSize: '0.8rem',
+                            margin: 0,
+                            color: isDarkMode ? 'rgba(255, 255, 255, 0.8)' : '#4b5563'
+                          }}>
+                            Vence: {new Date(task.dueDate).toLocaleDateString('es-ES')}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {filteredTasks.length === 0 && (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '4rem 2rem',
+                  opacity: 0.6
+                }}>
+                  <Briefcase size={64} style={{
+                    marginBottom: '1rem',
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)'
+                  }} />
+                  <h3 style={{
+                    fontSize: '1.5rem',
+                    fontWeight: '600',
+                    marginBottom: '0.5rem',
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.8)' : '#4a5568'
+                  }}>
+                    No hay tareas en esta categoría
+                  </h3>
+                  <p style={{
+                    fontSize: '1rem',
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.6)' : '#6b7280'
+                  }}>
+                    Selecciona otra categoría o espera a que se asignen nuevas tareas
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'proyecto' && (
+            <div>
+              <h2 style={{
+                fontSize: '1.5rem',
+                fontWeight: '600',
+                marginBottom: '1.5rem',
+                textAlign: 'center',
+                color: isDarkMode ? 'white' : '#1a202c'
+              }}>
+                Vista General del Proyecto
+              </h2>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gap: '1rem',
+                maxWidth: '1200px',
+                margin: '0 auto'
+              }}>
+                {projectItems.map((item) => (
+                  <div
+                    key={item.id}
+                    style={{
+                      padding: '1.5rem',
+                      borderRadius: '12px',
+                      border: '1px solid',
+                      background: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.9)',
+                      borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    <div style={{ marginBottom: '1rem' }}>
+                      <span style={{
+                        fontSize: '0.8rem',
+                        fontWeight: '600',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '4px',
+                        background: isDarkMode ? 'rgba(0, 122, 255, 0.2)' : 'rgba(0, 122, 255, 0.1)',
+                        color: isDarkMode ? '#0A84FF' : '#007AFF'
+                      }}>
+                        {item.id}
+                      </span>
+                    </div>
+                    <h3 style={{
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      margin: '0 0 0.5rem 0',
+                      color: isDarkMode ? 'white' : '#1a202c'
+                    }}>
+                      {item.concept}
+                    </h3>
+                    <p style={{
+                      fontSize: '0.8rem',
+                      margin: 0,
+                      opacity: 0.7,
+                      color: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : '#6b7280'
+                    }}>
+                      {item.section}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {projectItems.length === 0 && (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '4rem 2rem',
+                  opacity: 0.6
+                }}>
+                  <FileText size={64} style={{
+                    marginBottom: '1rem',
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)'
+                  }} />
+                  <h3 style={{
+                    fontSize: '1.5rem',
+                    fontWeight: '600',
+                    marginBottom: '0.5rem',
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.8)' : '#4a5568'
+                  }}>
+                    No hay elementos en el proyecto
+                  </h3>
+                  <p style={{
+                    fontSize: '1rem',
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.6)' : '#6b7280'
+                  }}>
+                    Los elementos aparecerán aquí cuando se configuren en el acuerdo de colaboración
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* Logout Button */}
+      <button
+        onClick={() => setShowLogoutDialog(true)}
+        style={{
+          position: 'fixed',
+          bottom: '2rem',
+          right: '2rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          padding: '0.75rem 1rem',
+          borderRadius: '20px',
+          fontSize: '0.875rem',
+          cursor: 'pointer',
+          zIndex: 10,
+          backdropFilter: 'blur(10px)',
+          transition: 'all 0.2s ease',
+          background: isDarkMode ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.1)',
+          border: `1px solid ${isDarkMode ? 'rgba(239, 68, 68, 0.3)' : 'rgba(239, 68, 68, 0.2)'}`,
+          color: '#ef4444'
+        }}
+      >
+        <LogOut size={16} />
+        <span>Cerrar sesión</span>
+      </button>
+
+      <LogoutDialog
+        isOpen={showLogoutDialog}
+        onClose={() => setShowLogoutDialog(false)}
+      />
+
+      <InputModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState(prev => ({ ...prev, isOpen: false }))}
+        onSave={modalState.onSave}
+        initialValue={modalState.initialValue}
+        fieldName={modalState.fieldName}
+        fieldType={modalState.fieldType}
+        selectOptions={modalState.selectOptions}
+      />
     </div>
   );
 };
