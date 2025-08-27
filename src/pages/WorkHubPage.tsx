@@ -314,6 +314,10 @@ const WorkHubPage: React.FC = () => {
             <button
               onClick={() => navigate('/dashboard')}
               className="back-button"
+            >
+              <ArrowLeft size={16} />
+              <span>Volver al menú</span>
+            </button>
             <div className="filter-cards" style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
