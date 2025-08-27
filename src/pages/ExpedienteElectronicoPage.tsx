@@ -1670,11 +1670,7 @@ const ExpedienteElectronicoPage: React.FC = () => {
         </div>
       </div>
 
-      <PageFooter
-        showLogoutDialog={showLogoutDialog}
-        onLogoutClick={() => setShowLogoutDialog(true)}
-        onLogoutDialogClose={() => setShowLogoutDialog(false)}
-      />
+    
 
       <AccessDeniedModal
         isOpen={showAccessDeniedModal}
