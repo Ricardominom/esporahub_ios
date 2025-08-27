@@ -336,7 +336,7 @@ const AccountPage: React.FC = () => {
         showLogo={true}
         breadcrumbs={[
           { label: 'Menú', onClick: () => navigate('/dashboard') },
-          { label: 'Overview de cuentas', onClick: () => navigate('/overview-main') },
+          { label: 'Overview', onClick: () => navigate('/overview-main') },
           { label: 'Configuración de cuentas', onClick: () => navigate('/overview') },
           { label: cleanClientName, onClick: () => navigate('/client-dashboard', { state: { clientName } }) }
         ]}
