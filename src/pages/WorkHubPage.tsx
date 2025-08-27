@@ -270,4 +270,12 @@ const WorkHubPage: React.FC = () => {
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategory(categoryId);
   }
-}
+
+  return (
+    <div className={`overview-container ${isVisible ? 'visible' : ''}`}>
+      {/* Component JSX content will be here */}
+    </div>
+  );
+};
+
+export default WorkHubPage;
