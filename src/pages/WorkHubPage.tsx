@@ -305,45 +305,27 @@ const WorkHubPage: React.FC = () => {
           }}>
             <button
               onClick={() => setActiveTab('tareas')}
-              style={{
-                padding: '0.75rem 1.5rem',
-                borderRadius: '12px',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                fontWeight: '600',
-                transition: 'all 0.3s ease',
-                background: activeTab === 'tareas' 
-                  ? (isDarkMode ? 'rgba(0, 122, 255, 0.8)' : '#007AFF')
-                  : (isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'),
-                color: activeTab === 'tareas' 
-                  ? 'white' 
-                  : (isDarkMode ? 'rgba(255, 255, 255, 0.8)' : '#4a5568')
-              }}
+              className={`tab-button ${activeTab === 'tareas' ? 'active' : ''}`}
             >
-              <Briefcase size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
-              Mis Tareas ({taskAssignments.length})
+              <div className="tab-number">
+                <Briefcase size={16} />
+              </div>
+              <div className="tab-info">
+                <div className="tab-title">Mis Tareas</div>
+                <div className="tab-subtitle">({taskAssignments.length})</div>
+              </div>
             </button>
             <button
               onClick={() => setActiveTab('proyecto')}
-              style={{
-                padding: '0.75rem 1.5rem',
-                borderRadius: '12px',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                fontWeight: '600',
-                transition: 'all 0.3s ease',
-                background: activeTab === 'proyecto' 
-                  ? (isDarkMode ? 'rgba(0, 122, 255, 0.8)' : '#007AFF')
-                  : (isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'),
-                color: activeTab === 'proyecto' 
-                  ? 'white' 
-                  : (isDarkMode ? 'rgba(255, 255, 255, 0.8)' : '#4a5568')
-              }}
+              className={`tab-button ${activeTab === 'proyecto' ? 'active' : ''}`}
             >
-              <FileText size={16} style={{ marginRight: '0.5rem', display: 'inline' }} />
-              Vista de Proyecto ({projectItems.length})
+              <div className="tab-number">
+                <FileText size={16} />
+              </div>
+              <div className="tab-info">
+                <div className="tab-title">Vista de Proyecto</div>
+                <div className="tab-subtitle">({projectItems.length})</div>
+              </div>
             </button>
           </div>
 
